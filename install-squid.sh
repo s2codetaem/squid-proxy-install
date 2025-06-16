@@ -1,29 +1,48 @@
 #!/bin/bash
-# Script cài đặt Squid Proxy hoàn toàn tự động
-
 set -e
 
-echo "==============================="
-echo "🚀 Cài đặt Squid Proxy có xác thực người dùng"
-echo "==============================="
+# ===================== PHẦN XÁC THỰC API =====================
+
+# Nhập thông tin đăng nhập từ người dùng
+echo "🔐 Vui lòng đăng nhập để xác thực quyền cài đặt Proxy"
+read -rp "Username: " input_user
+read -rsp "Password: " input_pass
+echo ""
+
+# Gửi yêu cầu POST đến API xác thực (thay IP bên dưới bằng IP máy bạn đang chạy Flask)
+API_URL="http://34.97.79.25:5000/api/auth"
+
+auth_response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$API_URL" \
+  -d "username=$input_user" \
+  -d "password=$input_pass")
+
+# Kiểm tra kết quả
+if [[ "$auth_response" != "200" ]]; then
+  echo "❌ Đăng nhập thất bại. Dừng cài đặt!"
+  exit 1
+fi
+
+echo "✅ Xác thực thành công. Tiếp tục cài đặt..."
+
+# ===================== PHẦN CÀI SQUID BÌNH THƯỜNG =====================
 
 # Cập nhật hệ thống
-echo "[1/8] ➤ Cập nhật hệ thống..."
-sudo apt update -y && sudo apt upgrade -y
+echo "[1/7] ➤ Đang cập nhật hệ thống..."
+sudo apt update && sudo apt upgrade -y
 
-# Cài các gói cần thiết
-echo "[2/8] ➤ Cài đặt Squid, Apache2-utils, Vim..."
+# Cài gói cần thiết
+echo "[2/7] ➤ Đang cài Squid + Apache2-utils..."
 sudo apt install -y squid apache2-utils vim curl
 
-# Hỏi người dùng nhập PORT mong muốn
-read -rp "[3/8] ➤ Nhập cổng bạn muốn dùng cho proxy (ví dụ: 6969): " proxy_port
+# Hỏi port proxy
+read -rp "[3/7] ➤ Nhập cổng proxy bạn muốn dùng (ví dụ 6969): " proxy_port
 
-# Xóa file cấu hình cũ nếu có
-echo "[4/8] ➤ Gỡ cấu hình Squid mặc định..."
+# Gỡ file cấu hình cũ (nếu có)
+echo "[4/7] ➤ Gỡ cấu hình cũ của Squid..."
 sudo rm -f /etc/squid/squid.conf
 
-# Tạo file cấu hình mới dùng biến PORT
-echo "[5/8] ➤ Tạo file cấu hình mới..."
+# Tạo cấu hình mới
+echo "[5/7] ➤ Tạo file cấu hình mới cho Squid..."
 cat <<EOF | sudo tee /etc/squid/squid.conf > /dev/null
 auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwords
 auth_param basic realm proxy
@@ -32,21 +51,16 @@ http_access allow authenticated
 http_port $proxy_port
 EOF
 
-# Nhập tài khoản người dùng
-read -rp "[6/8] ➤ Nhập tên người dùng proxy: " username
+# Tạo tài khoản proxy
+read -rp "[6/7] ➤ Nhập tên người dùng proxy muốn tạo: " squid_user
+echo "[6/7] ➤ Nhập mật khẩu cho '$squid_user':"
+sudo htpasswd -c /etc/squid/passwords "$squid_user"
 
-# Tạo user proxy (tự động hỏi mật khẩu)
-echo "[7/8] ➤ Nhập mật khẩu cho người dùng '$username'"
-sudo htpasswd -c /etc/squid/passwords "$username"
-
-# Khởi động lại dịch vụ
-echo "[8/8] ➤ Khởi động lại Squid..."
+# Khởi động lại Squid
+echo "[7/7] ➤ Khởi động lại dịch vụ Squid..."
 sudo systemctl restart squid
 
-# In IP
-echo "======================================="
-echo "✅ Đã cài xong Squid Proxy trên port $proxy_port"
-echo "🌐 IP máy chủ: $(curl -s ipinfo.io/ip)"
-echo "👤 Tài khoản: $username"
-echo "📦 Proxy URL: http://$username:<your_password>@<server_ip>:$proxy_port"
-echo "======================================="
+# In thông tin
+ip_address=$(curl -s ipinfo.io/ip)
+echo "✅ Cài đặt thành công!"
+echo "🌐 Proxy: http://$squid_user:<your_password>@$ip_address:$proxy_port"
