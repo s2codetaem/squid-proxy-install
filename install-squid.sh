@@ -1,31 +1,3 @@
-#!/bin/bash
-set -e
-
-# ===================== PHẦN XÁC THỰC API =====================
-
-# Nhập thông tin đăng nhập từ người dùng
-echo "🔐 Vui lòng đăng nhập để xác thực quyền cài đặt Proxy"
-read -rp "Username: " input_user
-read -rsp "Password: " input_pass
-echo ""
-
-# Gửi yêu cầu POST đến API xác thực (thay IP bên dưới bằng IP máy bạn đang chạy Flask)
-API_URL="http://34.97.79.25:5000/api/auth"
-
-auth_response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$API_URL" \
-  -d "username=$input_user" \
-  -d "password=$input_pass")
-
-# Kiểm tra kết quả
-if [[ "$auth_response" != "200" ]]; then
-  echo "❌ Đăng nhập thất bại. Dừng cài đặt!"
-  exit 1
-fi
-
-echo "✅ Xác thực thành công. Tiếp tục cài đặt..."
-
-# ===================== PHẦN CÀI SQUID BÌNH THƯỜNG =====================
-
 # Cập nhật hệ thống
 echo "[1/7] ➤ Đang cập nhật hệ thống..."
 sudo apt update && sudo apt upgrade -y
