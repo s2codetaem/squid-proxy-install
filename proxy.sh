@@ -231,36 +231,32 @@ EOF
         echo "[5/5] ➤ Khởi động lại dịch vụ Squid..."
         sudo systemctl restart squid
         
-        # Lấy IP và kiểm tra
+        # Lấy IP và hiển thị thông tin đầy đủ
         ip_address=$(curl -s ipinfo.io/ip)
         
-        if check_ip_status $ip_address; then
-            echo -e "${GREEN}✅ Cài đặt VIP thành công!${NC}"
-            
-            # Lấy thông tin IP
-            ip_info=$(get_ip_info $ip_address)
-            isp=$(echo $ip_info | grep -o '"isp":"[^"]*"' | cut -d'"' -f4)
-            country=$(echo $ip_info | grep -o '"country":"[^"]*"' | cut -d'"' -f4)
-            
-            # Kiểm tra tốc độ
-            speed=$(check_network_speed)
-            
-            # Kiểm tra protocols
-            protocols=$(check_proxy_protocols $ip_address $proxy_port $squid_user $squid_pass)
-            
-            echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-            echo -e "${PURPLE}║${WHITE}                             THÔNG TIN PROXY VIP                              ${PURPLE}║${NC}"
-            echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-            echo -e "${PURPLE}║${CYAN} 🌐 Proxy URL: ${WHITE}http://tangoclong:2000@$ip_address:6969${PURPLE}║${NC}"
-            echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
-            echo -e "${PURPLE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${PURPLE}║${NC}"
-            echo -e "${PURPLE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${PURPLE}║${NC}"
-            echo -e "${PURPLE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${PURPLE}║${NC}"
-            echo -e "${PURPLE}║${CYAN} 🔧 Protocols: ${WHITE}$protocols${PURPLE}║${NC}"
-            echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
-        else
-            echo -e "${RED}❌ IP lỗi - Không thể kết nối!${NC}"
-        fi
+        echo -e "${GREEN}✅ Cài đặt VIP thành công!${NC}"
+        
+        # Lấy thông tin IP
+        ip_info=$(get_ip_info $ip_address)
+        isp=$(echo $ip_info | grep -o '"isp":"[^"]*"' | cut -d'"' -f4)
+        country=$(echo $ip_info | grep -o '"country":"[^"]*"' | cut -d'"' -f4)
+        
+        # Kiểm tra tốc độ
+        speed=$(check_network_speed)
+        
+        # Kiểm tra protocols
+        protocols=$(check_proxy_protocols $ip_address $proxy_port $squid_user $squid_pass)
+        
+        echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${PURPLE}║${WHITE}                             THÔNG TIN PROXY VIP                              ${PURPLE}║${NC}"
+        echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+        echo -e "${PURPLE}║${CYAN} 🌐 Proxy URL: ${WHITE}http://tangoclong:2000@$ip_address:6969${PURPLE}║${NC}"
+        echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
+        echo -e "${PURPLE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${PURPLE}║${NC}"
+        echo -e "${PURPLE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${PURPLE}║${NC}"
+        echo -e "${PURPLE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${PURPLE}║${NC}"
+        echo -e "${PURPLE}║${CYAN} 🔧 Protocols: ${WHITE}$protocols${PURPLE}║${NC}"
+        echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
         
     else
         echo -e "${RED}❌ Mã VIP không đúng!${NC}"
