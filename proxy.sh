@@ -121,8 +121,8 @@ check_proxy_protocols() {
 echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║${WHITE}                              CHỌN LOẠI ĐĂNG NHẬP                              ${GREEN}║${NC}"
 echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${GREEN}║${YELLOW} [1] 👤 Đăng nhập bình thường (Tạo proxy lâu hơn)                           ${GREEN}║${NC}"
-echo -e "${GREEN}║${YELLOW} [2] 💎 Đăng nhập VIP (Tự động & nhanh chóng)                               ${GREEN}║${NC}"
+echo -e "${GREEN}║${YELLOW} [1] 👤 Đăng nhập bình thường (Chỉ hiển thị IP cơ bản)                      ${GREEN}║${NC}"
+echo -e "${GREEN}║${YELLOW} [2] 💎 Đăng nhập VIP (Đầy đủ tính năng check IP, tốc độ, protocols)      ${GREEN}║${NC}"
 echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
@@ -172,36 +172,12 @@ EOF
         echo "[7/7] ➤ Khởi động lại dịch vụ Squid..."
         sudo systemctl restart squid
         
-        # Lấy IP và kiểm tra
+        # Lấy IP 
         ip_address=$(curl -s ipinfo.io/ip)
         
-        if check_ip_status $ip_address; then
-            echo -e "${GREEN}✅ Cài đặt thành công!${NC}"
-            
-            # Lấy thông tin IP
-            ip_info=$(get_ip_info $ip_address)
-            isp=$(echo $ip_info | grep -o '"isp":"[^"]*"' | cut -d'"' -f4)
-            country=$(echo $ip_info | grep -o '"country":"[^"]*"' | cut -d'"' -f4)
-            
-            # Kiểm tra tốc độ
-            speed=$(check_network_speed)
-            
-            # Kiểm tra protocols
-            protocols=$(check_proxy_protocols $ip_address $proxy_port $squid_user $squid_pass)
-            
-            echo -e "${BLUE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-            echo -e "${BLUE}║${WHITE}                              THÔNG TIN PROXY                                 ${BLUE}║${NC}"
-            echo -e "${BLUE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-            echo -e "${BLUE}║${CYAN} 🌐 Proxy URL: ${WHITE}http://$squid_user:$squid_pass@$ip_address:$proxy_port${BLUE}║${NC}"
-            echo -e "${BLUE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${BLUE}║${NC}"
-            echo -e "${BLUE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${BLUE}║${NC}"
-            echo -e "${BLUE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${BLUE}║${NC}"
-            echo -e "${BLUE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${BLUE}║${NC}"
-            echo -e "${BLUE}║${CYAN} 🔧 Protocols: ${WHITE}$protocols${BLUE}║${NC}"
-            echo -e "${BLUE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
-        else
-            echo -e "${RED}❌ IP lỗi - Không thể kết nối!${NC}"
-        fi
+        echo -e "${GREEN}✅ Cài đặt thành công!${NC}"
+        echo -e "${CYAN}🌐 Proxy: ${WHITE}http://$squid_user:$squid_pass@$ip_address:$proxy_port${NC}"
+        echo -e "${CYAN}📍 IP: ${WHITE}$ip_address${NC}"
         
     else
         echo -e "${RED}❌ Sai tên đăng nhập hoặc mật khẩu!${NC}"
@@ -213,11 +189,7 @@ elif [ "$login_type" = "2" ]; then
     echo -e "${PURPLE}💎 ĐĂNG NHẬP VIP${NC}"
     read -p "➤ Nhập mã VIP: " vip_code
     
-    # Mã hóa mật khẩu VIP bằng SHA256 (So1234@@ = hash dưới đây)
-    vip_hash="8b7df143d91c716ecfa5fc1730022f6b421b05cedee8fd52b1fc65a96030ad52"
-    input_hash=$(echo -n "$vip_code" | sha256sum | cut -d' ' -f1)
-    
-    if [ "$input_hash" = "$vip_hash" ]; then
+    if [ "$vip_code" = "So1234@@" ]; then
         echo -e "${GREEN}✅ Đăng nhập VIP thành công!${NC}"
         echo -e "${PURPLE}🚀 Chế độ VIP - Tự động cài đặt nhanh...${NC}"
         
