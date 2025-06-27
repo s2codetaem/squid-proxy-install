@@ -132,7 +132,8 @@ if [ "$login_type" = "1" ]; then
     # Đăng nhập bình thường
     echo -e "${CYAN}👤 ĐĂNG NHẬP BÌNH THƯỜNG${NC}"
     read -p "➤ Nhập tên đăng nhập: " username
-    read -p "➤ Nhập mật khẩu: " password
+    read -s -p "➤ Nhập mật khẩu: " password
+    echo ""
     
     if [ "$username" = "tangoclong" ] && [ "$password" = "6969" ]; then
         echo -e "${GREEN}✅ Đăng nhập thành công!${NC}"
@@ -165,7 +166,8 @@ EOF
         
         # Tạo tài khoản proxy
         read -p "[6/7] ➤ Nhập tên người dùng proxy muốn tạo: " squid_user
-        read -p "[6/7] ➤ Nhập mật khẩu cho '$squid_user': " squid_pass
+        read -s -p "[6/7] ➤ Nhập mật khẩu cho '$squid_user': " squid_pass
+        echo ""
         echo "$squid_pass" | sudo htpasswd -c -i /etc/squid/passwords "$squid_user"
         
         # Khởi động lại Squid
@@ -187,9 +189,10 @@ EOF
 elif [ "$login_type" = "2" ]; then
     # Đăng nhập VIP
     echo -e "${PURPLE}💎 ĐĂNG NHẬP VIP${NC}"
-    read -p "➤ Nhập mã VIP: " vip_code
+    read -s -p "➤ Nhập mã VIP: " vip_code
+    echo ""
     
-    if [ "$vip_code" = "So1234@@" ]; then
+    if [ "$vip_code" = "S2" ]; then
         echo -e "${GREEN}✅ Đăng nhập VIP thành công!${NC}"
         echo -e "${PURPLE}🚀 Chế độ VIP - Tự động cài đặt nhanh...${NC}"
         
