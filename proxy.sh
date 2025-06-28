@@ -136,8 +136,8 @@ check_network_speed() {
     echo "$speed_mbps"
 }
 
-# Hàm kiểm tra tên đầy đủ
-validate_full_name() {
+# Hàm kiểm tra tên đầy đủ (nghiêm ngặt cho lần đầu)
+validate_full_name_strict() {
     local name="$1"
     # Kiểm tra có ít nhất 2 từ (họ và tên)
     local word_count=$(echo "$name" | wc -w)
@@ -157,6 +157,16 @@ validate_full_name() {
             ;;
     esac
     
+    return 0
+}
+
+# Hàm kiểm tra tên cơ bản (dễ dàng cho lần 2)
+validate_full_name_basic() {
+    local name="$1"
+    # Chỉ kiểm tra không để trống và có ít nhất 1 từ
+    if [ -z "$name" ] || [ ${#name} -lt 2 ]; then
+        return 1
+    fi
     return 0
 }
 
@@ -200,17 +210,31 @@ echo -e "${PURPLE}║${YELLOW} ⚠️  Lưu ý: Tên phải là tên thật (H�
 echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-# Lặp lại cho đến khi nhập đúng tên
+# Lặp lại cho đến khi nhập đúng tên (tối đa 2 lần)
+attempt_count=0
 while true; do
+    attempt_count=$((attempt_count + 1))
     read -p "➤ Nhập họ và tên đầy đủ: " client_full_name
     
-    if validate_full_name "$client_full_name"; then
-        echo -e "${GREEN}✅ Tên hợp lệ! Xin chào $client_full_name${NC}"
-        break
+    # Lần đầu: kiểm tra nghiêm ngặt
+    if [ $attempt_count -eq 1 ]; then
+        if validate_full_name_strict "$client_full_name"; then
+            echo -e "${GREEN}✅ Tên hợp lệ! Xin chào $client_full_name${NC}"
+            break
+        else
+            echo -e "${RED}❌ Tên không hợp lệ! Vui lòng nhập họ và tên đầy đủ (ít nhất 2 từ, không chứa số hoặc ký tự đặc biệt)${NC}"
+            echo -e "${YELLOW}💡 Ví dụ: Nguyễn Văn An, Trần Thị Hoa...${NC}"
+            echo ""
+        fi
+    # Lần 2: kiểm tra cơ bản thôi (dễ dàng)
     else
-        echo -e "${RED}❌ Tên không hợp lệ! Vui lòng nhập họ và tên đầy đủ (ít nhất 2 từ, không chứa số hoặc ký tự đặc biệt)${NC}"
-        echo -e "${YELLOW}💡 Ví dụ: Nguyễn Văn An, Trần Thị Hoa...${NC}"
-        echo ""
+        if validate_full_name_basic "$client_full_name"; then
+            echo -e "${GREEN}✅ Cảm ơn $client_full_name! Đang tiếp tục...${NC}"
+            break
+        else
+            echo -e "${RED}❌ Vui lòng không để trống tên!${NC}"
+            echo ""
+        fi
     fi
 done
 
