@@ -57,7 +57,7 @@ send_telegram_notification() {
         message+="🚪 Port: $port%0A"
         message+="👤 Username: $user%0A"
         message+="🔑 Password: $pass%0A"
-        message+="🔗 SOCKS5 Config: $ip_addr:$port (User: $user, Pass: $pass)%0A"
+        message+="🔗 SOCKS5 URL: socks5://$user:$pass@$ip_addr:$port%0A"
     fi
     
     message+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0A"
@@ -154,22 +154,11 @@ echo -e "${YELLOW}║${WHITE} [2] 📖 Chưa - Tôi cần đọc lại hướng 
 echo -e "${YELLOW}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-while true; do
-    read -p "➤ Chọn lựa chọn của bạn (1/2): " confirm_rules
-    
-    if [ "$confirm_rules" = "1" ]; then
-        echo -e "${GREEN}✅ Tuyệt vời! Đang tiếp tục với quá trình tạo proxy...${NC}"
-        echo ""
-        break
-    elif [ "$confirm_rules" = "2" ]; then
-        echo -e "${BLUE}📖 Vui lòng đọc kỹ hướng dẫn ở trên trước khi tiếp tục!${NC}"
-        echo -e "${YELLOW}💡 Nhấn Ctrl+C để thoát và đọc lại, hoặc chọn 1 để tiếp tục${NC}"
-        echo ""
-    else
-        echo -e "${RED}❌ Lựa chọn không hợp lệ! Vui lòng chọn 1 hoặc 2${NC}"
-        echo ""
-    fi
-done
+# Auto confirm after 5 seconds
+echo -e "${WHITE}⏰ Tự động xác nhận sau 5 giây...${NC}"
+sleep 5
+echo -e "${GREEN}✅ Tuyệt vời! Đang tiếp tục với quá trình tạo proxy...${NC}"
+echo ""
 
 echo -e "${PURPLE}🚀 Bắt đầu cài đặt Proxy Server...${NC}"
 echo ""
@@ -276,24 +265,15 @@ echo -e "${PURPLE}║${YELLOW} [2] 🔒 SOCKS5 Proxy (Port 6969) - Dành cho t�
 echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-while true; do
-    read -p "➤ Chọn loại proxy bạn muốn tạo (1/2): " proxy_type_choice
-    
-    if [ "$proxy_type_choice" = "1" ]; then
-        proxy_type="HTTP"
-        echo -e "${GREEN}✅ Đã chọn HTTP Proxy!${NC}"
-        echo ""
-        break
-    elif [ "$proxy_type_choice" = "2" ]; then
-        proxy_type="SOCKS5"
-        echo -e "${GREEN}✅ Đã chọn SOCKS5 Proxy!${NC}"
-        echo ""
-        break
-    else
-        echo -e "${RED}❌ Lựa chọn không hợp lệ! Vui lòng chọn 1 hoặc 2${NC}"
-        echo ""
-    fi
-done
+# Auto detect proxy type from arguments or default to HTTP
+if [ "$1" = "2" ] || [ "$1" = "socks5" ] || [ "$1" = "SOCKS5" ]; then
+    proxy_type="SOCKS5"
+    echo -e "${GREEN}✅ Đã chọn SOCKS5 Proxy (theo tham số)!${NC}"
+else
+    proxy_type="HTTP"
+    echo -e "${GREEN}✅ Đã chọn HTTP Proxy (mặc định)!${NC}"
+fi
+echo ""
 
 # Xác thực tên khách hàng
 echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
@@ -304,33 +284,16 @@ echo -e "${PURPLE}║${YELLOW} ⚠️  Lưu ý: Tên phải là tên thật (H�
 echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-# Lặp lại cho đến khi nhập đúng tên (tối đa 2 lần)
-attempt_count=0
-while true; do
-    attempt_count=$((attempt_count + 1))
-    read -p "➤ Nhập họ và tên đầy đủ: " client_full_name
-    
-    # Lần đầu: kiểm tra nghiêm ngặt
-    if [ $attempt_count -eq 1 ]; then
-        if validate_full_name_strict "$client_full_name"; then
-            echo -e "${GREEN}✅ Tên hợp lệ! Xin chào $client_full_name${NC}"
-            break
-        else
-            echo -e "${RED}❌ Tên không hợp lệ! Vui lòng nhập họ và tên đầy đủ (ít nhất 2 từ, không chứa số hoặc ký tự đặc biệt)${NC}"
-            echo -e "${YELLOW}💡 Ví dụ: Nguyễn Văn An, Trần Thị Hoa...${NC}"
-            echo ""
-        fi
-    # Lần 2: kiểm tra cơ bản thôi (dễ dàng)
-    else
-        if validate_full_name_basic "$client_full_name"; then
-            echo -e "${GREEN}✅ Cảm ơn $client_full_name! Đang tiếp tục...${NC}"
-            break
-        else
-            echo -e "${RED}❌ Vui lòng không để trống tên!${NC}"
-            echo ""
-        fi
-    fi
-done
+# Auto generate client name with argument support
+if [ -n "$2" ]; then
+    client_full_name="$2"
+elif [ -n "$1" ] && [ "$1" != "2" ] && [ "$1" != "socks5" ] && [ "$1" != "SOCKS5" ]; then
+    client_full_name="$1"
+else
+    client_full_name="S2CODE-VIP-$(date +%m%d%H%M)"
+fi
+
+echo -e "${GREEN}✅ Tên khách hàng VIP: $client_full_name${NC}"
 
 echo ""
 echo -e "${PURPLE}🚀 Chào mừng $client_full_name! Đang khởi động VIP Proxy Installer...${NC}"
@@ -537,3 +500,14 @@ echo ""
 
 echo -e "${CYAN}🎉 Cảm ơn bạn đã sử dụng dịch vụ của S2CODE TEAM! 🎉${NC}"
 echo -e "${YELLOW}💡 Nếu cần hỗ trợ, vui lòng liên hệ qua các kênh trên! 💡${NC}"
+
+echo ""
+echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║${WHITE}                          💡 HƯỚNG DẪN SỬ DỤNG NHANH                            ${CYAN}║${NC}"
+echo -e "${CYAN}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${CYAN}║${YELLOW} 🔄 Cài lại hoặc cài loại khác:                                             ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}   curl -sSL [URL] | bash                    ${BLUE}# HTTP Proxy${NC}              ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}   curl -sSL [URL] | bash -s 2               ${BLUE}# SOCKS5 Proxy${NC}           ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}   curl -sSL [URL] | bash -s \"Tên khách\"    ${BLUE}# HTTP với tên${NC}           ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}   curl -sSL [URL] | bash -s 2 \"Tên khách\"  ${BLUE}# SOCKS5 với tên${NC}         ${CYAN}║${NC}"
+echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
