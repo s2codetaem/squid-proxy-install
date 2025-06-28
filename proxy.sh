@@ -105,6 +105,57 @@ echo -e "${BLUE}║${CYAN} 📱 Telegram:   ${WHITE}https://t.me/S2codetaem48   
 echo -e "${BLUE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
+# Hướng dẫn sử dụng và lưu ý quan trọng
+echo -e "${RED}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${RED}║${WHITE}                          📋 LƯU Ý QUAN TRỌNG TRƯỚC KHI SỬ DỤNG                  ${RED}║${NC}"
+echo -e "${RED}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${RED}║${YELLOW} ⚠️  QUAN TRỌNG: Anh/chị cần mở port 6969 trên server trước khi chạy script   ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} 🔧 Script sẽ tự động cài đặt proxy trên port 6969                           ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} 📝 Khi hoàn thành, proxy sẽ hiện theo định dạng:                           ${RED}║${NC}"
+echo -e "${RED}║${WHITE}     ➤ http://user_name:pass@ip:6969                                         ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} 📋 Anh/chị chỉ việc sao chép link proxy để sử dụng                         ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} 🎯 Vui lòng làm đúng theo chỉ dẫn để có trải nghiệm tốt nhất               ${RED}║${NC}"
+echo -e "${RED}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
+echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║${WHITE}                            🔍 HƯỚNG DẪN CHI TIẾT                             ${CYAN}║${NC}"
+echo -e "${CYAN}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${CYAN}║${GREEN} 🏃‍♂️ Bước 1: Đảm bảo đã mở port 6969 trên server/VPS                         ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} 🚀 Bước 2: Chạy script này và làm theo hướng dẫn                            ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} ⏳ Bước 3: Đợi script tự động cài đặt (khoảng 2-5 phút)                     ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} 📋 Bước 4: Sao chép link proxy hiển thị để sử dụng                         ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} ✅ Bước 5: Kiểm tra proxy hoạt động bình thường                             ${CYAN}║${NC}"
+echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
+# Xác nhận đã đọc hướng dẫn
+echo -e "${YELLOW}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${YELLOW}║${WHITE}                          ❓ XÁC NHẬN TRƯỚC KHI TIẾP TỤC                      ${YELLOW}║${NC}"
+echo -e "${YELLOW}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${YELLOW}║${CYAN} Anh/chị đã đọc và hiểu rõ quy tắc tạo proxy ở trên chưa?                   ${YELLOW}║${NC}"
+echo -e "${YELLOW}║${WHITE} [1] 🔥 Có - Tôi đã đọc kỹ và sẵn sàng tiếp tục                            ${YELLOW}║${NC}"
+echo -e "${YELLOW}║${WHITE} [2] 📖 Chưa - Tôi cần đọc lại hướng dẫn                                   ${YELLOW}║${NC}"
+echo -e "${YELLOW}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
+while true; do
+    read -p "➤ Chọn lựa chọn của bạn (1/2): " confirm_rules
+    
+    if [ "$confirm_rules" = "1" ]; then
+        echo -e "${GREEN}✅ Tuyệt vời! Đang tiếp tục với quá trình tạo proxy...${NC}"
+        echo ""
+        break
+    elif [ "$confirm_rules" = "2" ]; then
+        echo -e "${BLUE}📖 Vui lòng đọc kỹ hướng dẫn ở trên trước khi tiếp tục!${NC}"
+        echo -e "${YELLOW}💡 Nhấn Ctrl+C để thoát và đọc lại, hoặc chọn 1 để tiếp tục${NC}"
+        echo ""
+    else
+        echo -e "${RED}❌ Lựa chọn không hợp lệ! Vui lòng chọn 1 hoặc 2${NC}"
+        echo ""
+    fi
+done
+
 echo -e "${PURPLE}🚀 Bắt đầu cài đặt Proxy Server...${NC}"
 echo ""
 sleep 2
