@@ -74,101 +74,56 @@ send_telegram_notification() {
 
 clear
 
-# S2codetaem Logo và giới thiệu
+# S2CODETAEM Logo và giới thiệu gọn
 echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║${WHITE}                                                                               ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}     ${RED}██████${YELLOW}██████${WHITE}       ${GREEN}██████${BLUE}██████${PURPLE}██████${WHITE}  ${CYAN}████████${RED}███████${WHITE}     ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}    ${RED}██${WHITE}    ${YELLOW}██${WHITE}              ${GREEN}██${WHITE}     ${BLUE}██${WHITE}     ${PURPLE}██${WHITE}  ${CYAN}██${WHITE}       ${RED}██${WHITE}      ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}    ${RED}██████${YELLOW}██████${WHITE}            ${GREEN}██${WHITE}     ${BLUE}██${WHITE}     ${PURPLE}██${WHITE}  ${CYAN}████████${RED}███████${WHITE}     ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}          ${YELLOW}██${WHITE}              ${GREEN}██${WHITE}     ${BLUE}██${WHITE}     ${PURPLE}██${WHITE}  ${CYAN}██${WHITE}            ${RED}██${WHITE} ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}    ${RED}██████${YELLOW}██████${WHITE}        ${GREEN}██████${BLUE}██████${PURPLE}██████${WHITE}  ${CYAN}████████${RED}███████${WHITE}     ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}   ███████${YELLOW}██████${GREEN}    ██████${BLUE}██████${PURPLE}██████${WHITE}████████${RED}███████${CYAN}███████${WHITE}    ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}   ██${WHITE}         ${YELLOW}██${WHITE}    ${GREEN}██${WHITE}    ${BLUE}██${WHITE}   ${PURPLE}██${WHITE}   ${WHITE}██${WHITE}      ${RED}██${WHITE}      ${CYAN}██${WHITE}    ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}   ███████${YELLOW}██████${GREEN}    ██${WHITE}    ${BLUE}██${WHITE}   ${PURPLE}██${WHITE}   ${WHITE}███████${RED}███████${CYAN}███████${WHITE}    ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}        ██${WHITE}   ${YELLOW}██${WHITE}    ${GREEN}██${WHITE}    ${BLUE}██${WHITE}   ${PURPLE}██${WHITE}   ${WHITE}██${WHITE}           ${RED}██${WHITE}      ${CYAN}██${WHITE}    ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}   ███████${YELLOW}██████${GREEN}    ██████${BLUE}██████${PURPLE}██████${WHITE}████████${RED}███████${CYAN}███████${WHITE}    ${CYAN}║${NC}"
 echo -e "${CYAN}║${WHITE}                                                                               ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}    ▄${RED}▄${WHITE}▄▄▄▄  ${YELLOW}▄${GREEN}▄${WHITE}▄▄▄▄      ${BLUE}▄${PURPLE}▄${WHITE}▄▄▄▄  ${CYAN}▄${RED}▄${WHITE}▄▄▄▄  ${YELLOW}▄${GREEN}▄${WHITE}▄▄▄▄  ${BLUE}▄${PURPLE}▄${WHITE}▄▄▄▄    ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}   ${RED}██${WHITE}▀▀▀▀   ${YELLOW}██${GREEN}█${WHITE}▀▀▀▀     ${BLUE}██${PURPLE}█${WHITE}▀▀▀▀  ${CYAN}██${RED}█${WHITE}▀▀▀▀  ${YELLOW}██${GREEN}█${WHITE}▀▀▀▀  ${BLUE}██${PURPLE}█${WHITE}▀▀▀▀   ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}   ${RED}████${WHITE}▄▄   ${YELLOW}██${GREEN}██${WHITE}▄▄▄      ${BLUE}██${PURPLE}██${WHITE}▄▄▄  ${CYAN}██${RED}██${WHITE}▄▄▄  ${YELLOW}██${GREEN}██${WHITE}▄▄▄  ${BLUE}██${PURPLE}██${WHITE}▄▄▄   ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}      ${RED}███${WHITE}  ${YELLOW}██${GREEN}███${WHITE}       ${BLUE}██${PURPLE}███${WHITE}    ${CYAN}██${RED}███${WHITE}    ${YELLOW}██${GREEN}███${WHITE}    ${BLUE}██${PURPLE}███${WHITE}    ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}   ${RED}██████${WHITE}  ${YELLOW}██${GREEN}████${WHITE}▄▄▄   ${BLUE}██${PURPLE}████${WHITE}▄▄ ${CYAN}██${RED}████${WHITE}▄▄ ${YELLOW}██${GREEN}████${WHITE}▄▄ ${BLUE}██${PURPLE}████${WHITE}▄▄  ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}                                                                               ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}                     ⚡${YELLOW} S2CODE TEAM ${RED}★ ${BLUE}PROXY INSTALLER ${WHITE}⚡                      ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}                   ${GREEN}🚀 Premium Tools & Services Provider 🚀                  ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}                    ⚡${YELLOW} S2CODETAEM ${RED}★ ${BLUE}VIP PROXY INSTALLER ${WHITE}⚡                    ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}          ${GREEN}🚀 Developed by TẠ NGỌC LONG - Premium Solutions 🚀             ${CYAN}║${NC}"
 echo -e "${CYAN}║${WHITE}                                                                               ${CYAN}║${NC}"
 echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-# Thông tin nhà phát triển
-echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║${WHITE}                              THÔNG TIN NHÀ PHÁT TRIỂN                        ${GREEN}║${NC}"
-echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${GREEN}║${YELLOW} 👨‍💻 Nhà phát triển: ${WHITE}TẠ NGỌC LONG                                           ${GREEN}║${NC}"
-echo -e "${GREEN}║${YELLOW} 🌐 Chuyên cung cấp tài khoản Google Cloud số lượng lớn                     ${GREEN}║${NC}"
-echo -e "${GREEN}║${YELLOW} 🎮 Chuyên cung cấp các mặt hàng MMO                                        ${GREEN}║${NC}"
-echo -e "${GREEN}║${YELLOW} 🔗 Chuyên cung cấp tài nguyên Proxy, tài khoản các loại                    ${GREEN}║${NC}"
-echo -e "${GREEN}║${YELLOW} 💻 Nhận tạo Tools, tạo Web, code phần mềm theo nhu cầu                     ${GREEN}║${NC}"
-echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
-echo ""
-
-# Thông tin liên hệ
+# Thông tin liên hệ gọn
 echo -e "${BLUE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║${WHITE}                                LIÊN HỆ                                      ${BLUE}║${NC}"
-echo -e "${BLUE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${BLUE}║${CYAN} 📘 Facebook 1: ${WHITE}https://www.facebook.com/s2code08122000/                  ${BLUE}║${NC}"
-echo -e "${BLUE}║${CYAN} 📘 Facebook 2: ${WHITE}https://www.facebook.com/tangoclongmeta                   ${BLUE}║${NC}"
-echo -e "${BLUE}║${CYAN} 📱 Telegram:   ${WHITE}https://t.me/S2codetaem48                                ${BLUE}║${NC}"
+echo -e "${BLUE}║${WHITE} 📞 LIÊN HỆ: ${CYAN}FB: s2code08122000 ${WHITE}│ ${CYAN}TG: @S2codetaem48 ${WHITE}│ ${CYAN}Services: Cloud/MMO/Tools${BLUE}║${NC}"
 echo -e "${BLUE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-# Hướng dẫn sử dụng và lưu ý quan trọng
-echo -e "${RED}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${RED}║${WHITE}                          📋 LƯU Ý QUAN TRỌNG TRƯỚC KHI SỬ DỤNG                  ${RED}║${NC}"
-echo -e "${RED}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${RED}║${YELLOW} ⚠️  HTTP Proxy: Cần mở port 6969 trên server                               ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} ⚠️  SOCKS5 Proxy: Cần mở port 6969 trên server                            ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} 🔧 Script sẽ tự động cài đặt proxy theo lựa chọn của bạn                   ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} 📝 Khi hoàn thành, proxy sẽ hiện theo định dạng tương ứng                 ${RED}║${NC}"
-echo -e "${RED}║${WHITE}     ➤ HTTP: http://user:pass@ip:6969                                       ${RED}║${NC}"
-echo -e "${RED}║${WHITE}     ➤ SOCKS5: socks5://tangoclong:2000@ip:6969                            ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} 📋 Anh/chị chỉ việc sao chép thông tin proxy để sử dụng                   ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} 🎯 Vui lòng làm đúng theo chỉ dẫn để có trải nghiệm tốt nhất               ${RED}║${NC}"
-echo -e "${RED}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
-echo ""
-
-echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║${WHITE}                            🔍 HƯỚNG DẪN CHI TIẾT                             ${CYAN}║${NC}"
-echo -e "${CYAN}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${CYAN}║${GREEN} 🏃‍♂️ Bước 1: Mở port 6969 trên server (dùng chung cho cả HTTP và SOCKS5)      ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} 🎯 Bước 2: Chọn loại proxy phù hợp với nhu cầu                             ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} 🚀 Bước 3: Chạy script này và làm theo hướng dẫn                            ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} ⏳ Bước 4: Đợi script tự động cài đặt (khoảng 2-7 phút)                     ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} 📋 Bước 5: Sao chép thông tin proxy hiển thị để sử dụng                    ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} ✅ Bước 6: Kiểm tra proxy hoạt động bình thường                             ${CYAN}║${NC}"
-echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
-echo ""
-
-# Xác nhận đã đọc hướng dẫn
+# Hướng dẫn sử dụng gọn
 echo -e "${YELLOW}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${YELLOW}║${WHITE}                          ❓ XÁC NHẬN TRƯỚC KHI TIẾP TỤC                      ${YELLOW}║${NC}"
-echo -e "${YELLOW}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${YELLOW}║${CYAN} Anh/chị đã đọc và hiểu rõ quy tắc tạo proxy ở trên chưa?                   ${YELLOW}║${NC}"
-echo -e "${YELLOW}║${WHITE} [1] 🔥 Có - Tôi đã đọc kỹ và sẵn sàng tiếp tục                            ${YELLOW}║${NC}"
-echo -e "${YELLOW}║${WHITE} [2] 📖 Chưa - Tôi cần đọc lại hướng dẫn                                   ${YELLOW}║${NC}"
+echo -e "${YELLOW}║${WHITE} ⚠️  QUAN TRỌNG: ${RED}Mở port 6969 ${WHITE}trước khi chạy script │ ${GREEN}Proxy: tangoclong:2000${YELLOW}║${NC}"
 echo -e "${YELLOW}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
+# Xác nhận đã đọc hướng dẫn gọn
+echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${GREEN}║${WHITE} Bạn đã mở port 6969 và sẵn sàng cài đặt proxy? ${YELLOW}[Y/N]${GREEN}║${NC}"
+echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
 while true; do
-    read -p "➤ Chọn lựa chọn của bạn (1/2): " confirm_rules
+    read -p "➤ Nhập [Y] để tiếp tục hoặc [N] để thoát: " confirm_ready
     
-    if [ "$confirm_rules" = "1" ]; then
-        echo -e "${GREEN}✅ Tuyệt vời! Đang tiếp tục với quá trình tạo proxy...${NC}"
-        echo ""
-        break
-    elif [ "$confirm_rules" = "2" ]; then
-        echo -e "${BLUE}📖 Vui lòng đọc kỹ hướng dẫn ở trên trước khi tiếp tục!${NC}"
-        echo -e "${YELLOW}💡 Nhấn Ctrl+C để thoát và đọc lại, hoặc chọn 1 để tiếp tục${NC}"
-        echo ""
-    else
-        echo -e "${RED}❌ Lựa chọn không hợp lệ! Vui lòng chọn 1 hoặc 2${NC}"
-        echo ""
-    fi
+    case "${confirm_ready,,}" in
+        y|yes)
+            echo -e "${GREEN}✅ Đang bắt đầu cài đặt proxy...${NC}"
+            echo ""
+            break
+            ;;
+        n|no)
+            echo -e "${RED}❌ Đã hủy! Vui lòng mở port 6969 rồi chạy lại script.${NC}"
+            exit 0
+            ;;
+        *)
+            echo -e "${YELLOW}⚠️ Vui lòng nhập Y hoặc N${NC}"
+            ;;
+    esac
 done
 
 echo -e "${PURPLE}🚀 Bắt đầu cài đặt Proxy Server...${NC}"
