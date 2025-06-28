@@ -6,6 +6,114 @@
 
 ⚡ **S2CODE TEAM** - Professional automated proxy installer for HTTP and SOCKS5 proxies with advanced features and monitoring.
 
+---
+
+## 📖 HƯỚNG DẪN TIẾNG VIỆT
+
+### 🚀 Cài đặt nhanh
+
+**Chỉ cần chạy lệnh sau trên Ubuntu/Debian server:**
+
+```bash
+# HTTP Proxy (mặc định)
+curl -sSL https://raw.githubusercontent.com/s2codetaem/s2code-proxy-installer/main/poxy.sh | bash
+
+# SOCKS5 Proxy
+curl -sSL https://raw.githubusercontent.com/s2codetaem/s2code-proxy-installer/main/poxy.sh | bash -s 2
+
+# HTTP với tên custom
+curl -sSL https://raw.githubusercontent.com/s2codetaem/s2code-proxy-installer/main/poxy.sh | bash -s "Tên của bạn"
+
+# SOCKS5 với tên custom
+curl -sSL https://raw.githubusercontent.com/s2codetaem/s2code-proxy-installer/main/poxy.sh | bash -s 2 "Tên của bạn"
+```
+
+### 📋 Hướng dẫn sử dụng
+
+#### 1️⃣ Chuẩn bị server
+- ✅ Ubuntu 18.04+ hoặc Debian 9+
+- ✅ Root access hoặc sudo
+- ✅ **Quan trọng**: Mở port 6969 trong firewall
+
+#### 2️⃣ Mở port firewall (BẮT BUỘC)
+```bash
+# UFW (Ubuntu/Debian)
+sudo ufw allow 6969
+
+# IPTables  
+sudo iptables -A INPUT -p tcp --dport 6969 -j ACCEPT
+
+# Cho cloud providers (AWS, GCP, Azure):
+# Thêm rule trong Security Groups cho port 6969
+```
+
+#### 3️⃣ Chạy script và làm theo hướng dẫn
+- Script sẽ tự động cài đặt proxy theo lựa chọn
+- Hiển thị logo S2CODE và thông tin liên hệ  
+- Đợi 2-7 phút để hoàn tất cài đặt
+- Copy thông tin proxy để sử dụng
+
+#### 4️⃣ Thông tin proxy nhận được
+
+**HTTP Proxy:**
+```
+http://tangoclong:2000@your-server-ip:6969
+```
+
+**SOCKS5 Proxy:**
+```
+socks5://tangoclong:2000@your-server-ip:6969
+```
+
+### 🔧 So sánh HTTP vs SOCKS5
+
+| Tính năng | HTTP Proxy | SOCKS5 Proxy |
+|-----------|------------|--------------|
+| **Tốc độ** | ⚡ Rất nhanh | ⚡ Nhanh |
+| **Ứng dụng** | 🌐 Web browsing | 📱 Tất cả app |
+| **Bảo mật** | 🔐 Cơ bản | 🛡️ Cao |
+| **Khuyến nghị** | Website, API, Curl | Game, App, Torrent |
+
+### 🛠️ Kiểm tra proxy hoạt động
+
+```bash
+# Test HTTP Proxy
+curl -x http://tangoclong:2000@YOUR_IP:6969 http://ipinfo.io/ip
+
+# Test SOCKS5 Proxy
+curl --socks5 tangoclong:2000@YOUR_IP:6969 http://ipinfo.io/ip
+```
+
+### ⚠️ Lưu ý quan trọng
+
+1. **🚪 Port 6969:** Đảm bảo mở port này trong firewall
+2. **🔒 Bảo mật:** Username/Password mặc định: `tangoclong/2000`
+3. **🛡️ Pháp lý:** Chỉ sử dụng cho mục đích hợp pháp
+4. **📈 Performance:** Monitor resource usage trên server
+
+### 📞 Liên hệ & Hỗ trợ
+
+#### 👨‍💻 **Nhà phát triển: TẠ NGỌC LONG**
+
+**🌐 Dịch vụ chuyên nghiệp:**
+- 🏢 **Google Cloud accounts** số lượng lớn
+- 🎮 **MMO tools & accounts** đa dạng  
+- 🔗 **Proxy & VPN services** chất lượng cao
+- 💻 **Custom development** - Tools, Web, Software theo yêu cầu
+
+**📞 Kênh liên hệ:**
+- 📘 **Facebook 1:** [https://www.facebook.com/s2code08122000/](https://www.facebook.com/s2code08122000/)
+- 📘 **Facebook 2:** [https://www.facebook.com/tangoclongmeta](https://www.facebook.com/tangoclongmeta)  
+- 📱 **Telegram:** [https://t.me/S2codetaem48](https://t.me/S2codetaem48)
+
+**💡 Nhận đặt hàng:**
+- ✅ Tạo tools automation theo yêu cầu
+- ✅ Phát triển website, ứng dụng
+- ✅ Thiết kế hệ thống proxy/VPN
+- ✅ Tư vấn giải pháp MMO chuyên nghiệp
+
+---
+
 ## 🚀 Features
 
 - **Dual Proxy Support**: HTTP & SOCKS5 proxy installation
@@ -284,4 +392,21 @@ S2CODE TEAM offers comprehensive digital services:
 
 **© 2024 S2CODE TEAM - Premium Tools & Services Provider**
 
-*Professional proxy solutions for modern networking needs* 
+*Professional proxy solutions for modern networking needs*
+
+### 🔄 Version Updates
+
+**Script được cải tiến dựa trên [S2CODE Squid Proxy Installer](https://raw.githubusercontent.com/s2codetaem/squid-proxy-install/refs/heads/main/proxy.sh):**
+- ✅ Loại bỏ tất cả vòng lặp vô hạn (while loops)
+- ✅ Tương thích hoàn toàn với `curl | bash`
+- ✅ Auto-detection proxy type qua arguments
+- ✅ Improved error handling cho SOCKS5 compilation
+- ✅ Professional UI với logo S2CODE ASCII art
+- ✅ Enhanced Telegram notifications
+- ✅ Support cả tiếng Việt và tiếng Anh
+
+**Core Improvements:**
+- No more infinite loops when run via pipe
+- Argument-based operation for automation
+- Better fallback mechanisms
+- Professional branding and UI 
