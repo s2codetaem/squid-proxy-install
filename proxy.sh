@@ -122,11 +122,11 @@ echo -e "${RED}╔════════════════════�
 echo -e "${RED}║${WHITE}                          📋 LƯU Ý QUAN TRỌNG TRƯỚC KHI SỬ DỤNG                  ${RED}║${NC}"
 echo -e "${RED}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
 echo -e "${RED}║${YELLOW} ⚠️  HTTP Proxy: Cần mở port 6969 trên server                               ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} ⚠️  SOCKS5 Proxy: Cần mở port 1080 trên server                            ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} ⚠️  SOCKS5 Proxy: Cần mở port 6969 trên server                            ${RED}║${NC}"
 echo -e "${RED}║${YELLOW} 🔧 Script sẽ tự động cài đặt proxy theo lựa chọn của bạn                   ${RED}║${NC}"
 echo -e "${RED}║${YELLOW} 📝 Khi hoàn thành, proxy sẽ hiện theo định dạng tương ứng                 ${RED}║${NC}"
 echo -e "${RED}║${WHITE}     ➤ HTTP: http://user:pass@ip:6969                                       ${RED}║${NC}"
-echo -e "${RED}║${WHITE}     ➤ SOCKS5: Host:IP, Port:1080, User:tangoclong, Pass:2000              ${RED}║${NC}"
+echo -e "${RED}║${WHITE}     ➤ SOCKS5: Host:IP, Port:6969, User:tangoclong, Pass:2000              ${RED}║${NC}"
 echo -e "${RED}║${YELLOW} 📋 Anh/chị chỉ việc sao chép thông tin proxy để sử dụng                   ${RED}║${NC}"
 echo -e "${RED}║${YELLOW} 🎯 Vui lòng làm đúng theo chỉ dẫn để có trải nghiệm tốt nhất               ${RED}║${NC}"
 echo -e "${RED}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
@@ -135,7 +135,7 @@ echo ""
 echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║${WHITE}                            🔍 HƯỚNG DẪN CHI TIẾT                             ${CYAN}║${NC}"
 echo -e "${CYAN}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${CYAN}║${GREEN} 🏃‍♂️ Bước 1: Mở port tương ứng (HTTP:6969 hoặc SOCKS5:1080)                  ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} 🏃‍♂️ Bước 1: Mở port 6969 trên server (dùng chung cho cả HTTP và SOCKS5)      ${CYAN}║${NC}"
 echo -e "${CYAN}║${GREEN} 🎯 Bước 2: Chọn loại proxy phù hợp với nhu cầu                             ${CYAN}║${NC}"
 echo -e "${CYAN}║${GREEN} 🚀 Bước 3: Chạy script này và làm theo hướng dẫn                            ${CYAN}║${NC}"
 echo -e "${CYAN}║${GREEN} ⏳ Bước 4: Đợi script tự động cài đặt (khoảng 2-7 phút)                     ${CYAN}║${NC}"
@@ -272,7 +272,7 @@ echo -e "${PURPLE}╔═══════════════════�
 echo -e "${PURPLE}║${WHITE}                            CHỌN LOẠI PROXY                                 ${PURPLE}║${NC}"
 echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
 echo -e "${PURPLE}║${YELLOW} [1] 🌐 HTTP Proxy (Port 6969) - Dành cho web browsing                     ${PURPLE}║${NC}"
-echo -e "${PURPLE}║${YELLOW} [2] 🔒 SOCKS5 Proxy (Port 1080) - Dành cho tất cả ứng dụng               ${PURPLE}║${NC}"
+echo -e "${PURPLE}║${YELLOW} [2] 🔒 SOCKS5 Proxy (Port 6969) - Dành cho tất cả ứng dụng               ${PURPLE}║${NC}"
 echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
@@ -379,7 +379,7 @@ EOF
 
 elif [ "$proxy_type" = "SOCKS5" ]; then
     # Cài đặt SOCKS5 Proxy (3proxy) - Tự động dùng user/pass cố định
-    proxy_port="1080"
+    proxy_port="6969"
     squid_user="tangoclong"
     squid_pass="2000"
 
@@ -423,7 +423,7 @@ archiver gz /usr/local/3proxy/logs/3proxy-%F.log.gz 30
 auth strong
 users tangoclong:CL:2000
 allow tangoclong
-socks -p1080
+socks -p6969
 EOF
 
     # Tạo systemd service
@@ -487,7 +487,7 @@ else
     echo -e "${PURPLE}║${WHITE}                        THÔNG TIN SOCKS5 PROXY VIP - $client_full_name${PURPLE}║${NC}"
     echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
     echo -e "${PURPLE}║${CYAN} 🔒 SOCKS5 Host: ${WHITE}$ip_address${PURPLE}║${NC}"
-    echo -e "${PURPLE}║${CYAN} 🚪 Port: ${WHITE}1080${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🚪 Port: ${WHITE}6969${PURPLE}║${NC}"
     echo -e "${PURPLE}║${CYAN} 👤 Username: ${WHITE}tangoclong${PURPLE}║${NC}"
     echo -e "${PURPLE}║${CYAN} 🔑 Password: ${WHITE}2000${PURPLE}║${NC}"
     echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
