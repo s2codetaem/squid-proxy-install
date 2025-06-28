@@ -378,158 +378,82 @@ EOF
     sudo systemctl restart squid
 
 elif [ "$proxy_type" = "SOCKS5" ]; then
-    # Cài đặt SOCKS5 Proxy (3proxy) - Tự động dùng user/pass cố định
+    # Cài đặt SOCKS5 Proxy (Dante) - Tự động dùng user/pass cố định
     proxy_port="6969"
     squid_user="tangoclong"
     squid_pass="2000"
+    IFACE=$(ip route | grep default | awk '{print $5}')
+
+    echo "==> Cài đặt Dante SOCKS5 Proxy..."
 
     # Cập nhật hệ thống
-    echo "[1/7] ➤ Đang cập nhật hệ thống..."
+    echo "[1/5] ➤ Đang cập nhật hệ thống..."
     sudo apt update && sudo apt upgrade -y
 
-    # Cài đặt dependencies
-    echo "[2/7] ➤ Cài đặt dependencies..."
-    sudo apt install -y wget gcc make curl bc
+    # Cài đặt Dante
+    echo "[2/5] ➤ Đang cài Dante SOCKS5 Server..."
+    sudo apt install -y dante-server curl bc
 
-    # Download và compile 3proxy
-    echo "[3/7] ➤ Download và compile 3proxy..."
-    cd /tmp
-    
-    # Cleanup old files
-    rm -rf 3proxy*
-    
-    # Download với retry
-    for i in {1..3}; do
-        if wget -q https://github.com/z3APA3A/3proxy/archive/3proxy-0.8.13.tar.gz; then
-            break
-        fi
-        echo "   ⚠️ Download thất bại, thử lại lần $i..."
-        sleep 2
-    done
-    
-    if [ ! -f "3proxy-0.8.13.tar.gz" ]; then
-        echo "   ❌ Không thể download 3proxy!"
-        exit 1
-    fi
-    
-    tar xzf 3proxy-0.8.13.tar.gz
-    cd 3proxy-3proxy-0.8.13
-    
-    # Compile với error checking
-    if ! make -f Makefile.Linux; then
-        echo "   ❌ Compile 3proxy thất bại!"
-        echo "   🔧 Thử cài thêm dependencies..."
-        sudo apt install -y build-essential
-        make -f Makefile.Linux
-    fi
+    # Tạo user
+    echo "[3/5] ➤ Tạo user cho SOCKS5..."
+    sudo useradd -m -s /bin/false "$squid_user" 2>/dev/null || echo "   ⚠️ User đã tồn tại, đang cập nhật password..."
+    echo "$squid_user:$squid_pass" | sudo chpasswd
 
-    # Cài đặt 3proxy
-    echo "[4/7] ➤ Cài đặt 3proxy..."
-    
-    # Kiểm tra file binary đã compile
-    if [ ! -f "src/3proxy" ]; then
-        echo "   ❌ 3proxy binary không được tạo!"
-        exit 1
-    fi
-    
-    # Tạo thư mục và copy files
-    sudo mkdir -p /usr/local/3proxy/bin
-    sudo cp src/3proxy /usr/local/3proxy/bin/
-    sudo chmod +x /usr/local/3proxy/bin/3proxy
-    sudo mkdir -p /usr/local/3proxy/logs
-    sudo mkdir -p /etc/3proxy
-    
-    # Kiểm tra cài đặt
-    if [ -f "/usr/local/3proxy/bin/3proxy" ]; then
-        echo "   ✅ 3proxy đã được cài đặt"
-    else
-        echo "   ❌ Cài đặt 3proxy thất bại!"
-        exit 1
-    fi
+    # Cấu hình danted.conf
+    echo "[4/5] ➤ Tạo file cấu hình VIP cho Dante..."
+    sudo tee /etc/danted.conf > /dev/null <<EOF
+logoutput: /var/log/danted.log
+internal: $IFACE port = $proxy_port
+external: $IFACE
+method: pam
+user.notprivileged: nobody
 
-    # Tạo cấu hình 3proxy với user/pass tự động
-    echo "[5/7] ➤ Tạo cấu hình SOCKS5 với thông tin cố định..."
-    sudo tee /etc/3proxy/3proxy.cfg > /dev/null <<EOF
-# 3proxy configuration - S2CODE VIP SOCKS5
-daemon
-maxconn 1000
-nserver 8.8.8.8
-nserver 8.8.4.4
-nserver 1.1.1.1
-nscache 65536
-timeouts 1 5 30 60 180 1800 15 60
-log /usr/local/3proxy/logs/3proxy.log D
-logformat "- +_L%t.%. %N.%p %E %U %C:%c %R:%r %O %I %h %T"
-archiver gz /usr/local/3proxy/logs/3proxy-%F.log.gz 30
-auth strong
-users tangoclong:CL:2000
-allow tangoclong
-socks -p6969
+client pass {
+    from: 0.0.0.0/0 to: 0.0.0.0/0
+    log: connect disconnect
+}
+
+socks pass {
+    from: 0.0.0.0/0 to: 0.0.0.0/0
+    command: connect
+    log: connect disconnect
+}
 EOF
 
-    # Tạo systemd service
-    echo "[6/7] ➤ Tạo systemd service..."
-    sudo tee /etc/systemd/system/3proxy.service > /dev/null <<EOF
-[Unit]
-Description=3proxy SOCKS5 Server - S2CODE VIP
-After=network.target
+    # Mở port trên UFW (nếu có)
+    if command -v ufw >/dev/null; then
+        echo "   🔧 Đang mở port $proxy_port trên UFW..."
+        sudo ufw allow "$proxy_port"/tcp >/dev/null 2>&1
+        sudo ufw reload >/dev/null 2>&1
+    fi
 
-[Service]
-Type=simple
-User=root
-ExecStart=/usr/local/3proxy/bin/3proxy /etc/3proxy/3proxy.cfg
-ExecReload=/bin/kill -HUP \$MAINPID
-Restart=on-failure
-RestartSec=3
-LimitNOFILE=65535
+    # Khởi động lại dịch vụ
+    echo "[5/5] ➤ Khởi động dịch vụ Dante..."
+    sudo systemctl restart danted 2>/dev/null || sudo systemctl restart dante-server 2>/dev/null
+    sudo systemctl enable danted 2>/dev/null || sudo systemctl enable dante-server 2>/dev/null
 
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    # Khởi động dịch vụ
-    echo "[7/7] ➤ Khởi động SOCKS5 proxy..."
-    
-    # Stop service nếu đang chạy
-    sudo systemctl stop 3proxy 2>/dev/null || true
-    
-    # Reload và start
-    sudo systemctl daemon-reload
-    sudo systemctl enable 3proxy
-    
-    echo "   🔧 Đang khởi động 3proxy service..."
-    if sudo systemctl start 3proxy; then
-        sleep 3
+    # Kiểm tra dịch vụ
+    sleep 3
+    if systemctl is-active --quiet danted || systemctl is-active --quiet dante-server; then
+        echo "   ✅ Dante SOCKS5 service đã khởi động thành công"
         
-        # Kiểm tra trạng thái
-        if systemctl is-active --quiet 3proxy; then
-            echo "   ✅ SOCKS5 service đã khởi động thành công"
-            
-            # Kiểm tra port
-            sleep 2
-            if ss -tuln | grep -q ":6969 "; then
-                echo "   ✅ Port 6969 đã được bind thành công"
-            else
-                echo "   ⚠️ Port 6969 chưa được bind, đang thử lại..."
-                sudo systemctl restart 3proxy
-                sleep 3
-                if ss -tuln | grep -q ":6969 "; then
-                    echo "   ✅ Port 6969 đã được bind sau khi restart"
-                else
-                    echo "   ❌ Port 6969 vẫn chưa được bind!"
-                    echo "   📝 Kiểm tra log:"
-                    sudo journalctl -u 3proxy --no-pager -n 5
-                fi
-            fi
+        # Kiểm tra port
+        if ss -tuln | grep -q ":$proxy_port "; then
+            echo "   ✅ Port $proxy_port đã được bind thành công"
         else
-            echo "   ❌ Không thể khởi động 3proxy service!"
-            echo "   📝 Log lỗi:"
-            sudo journalctl -u 3proxy --no-pager -n 10
+            echo "   ⚠️ Đang kiểm tra lại port binding..."
+            sleep 2
+            if ss -tuln | grep -q ":$proxy_port "; then
+                echo "   ✅ Port $proxy_port hoạt động bình thường"
+            fi
         fi
     else
-        echo "   ❌ Lỗi khi start 3proxy service!"
-        sudo journalctl -u 3proxy --no-pager -n 5
+        echo "   ⚠️ Đang thử khởi động lại dịch vụ..."
+        sudo systemctl restart danted 2>/dev/null || sudo systemctl restart dante-server 2>/dev/null
+        sleep 2
     fi
+
+    echo "✅ Proxy SOCKS5 đã được cài đặt xong!"
 fi
 
 # Lấy IP và hiển thị thông tin đầy đủ
@@ -601,4 +525,3 @@ echo ""
 
 echo -e "${CYAN}🎉 Cảm ơn bạn đã sử dụng dịch vụ của S2CODE TEAM! 🎉${NC}"
 echo -e "${YELLOW}💡 Nếu cần hỗ trợ, vui lòng liên hệ qua các kênh trên! 💡${NC}"
-
