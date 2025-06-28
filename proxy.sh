@@ -393,54 +393,55 @@ elif [ "$proxy_type" = "SOCKS5" ]; then
 
     # Download và compile 3proxy
     echo "[3/7] ➤ Download và compile 3proxy..."
-    cd /tmp
-    wget -q https://github.com/z3APA3A/3proxy/archive/3proxy-0.8.13.tar.gz
+    cd /tmp && rm -rf 3proxy*
+    
+    # Download với error handling
+    if ! wget -q https://github.com/z3APA3A/3proxy/archive/3proxy-0.8.13.tar.gz; then
+        echo "❌ Lỗi download! Thử mirror khác..."
+        wget -q https://github.com/3proxy/3proxy/archive/0.8.13.tar.gz -O 3proxy-0.8.13.tar.gz
+    fi
+    
     tar xzf 3proxy-0.8.13.tar.gz
-    cd 3proxy-3proxy-0.8.13
-    make -f Makefile.Linux
+    cd 3proxy-*
+    
+    # Compile với error checking
+    echo "📦 Đang compile 3proxy..."
+    if ! make -f Makefile.Linux; then
+        echo "❌ Compile lỗi! Thử cách khác..."
+        apt install -y build-essential
+        make -f Makefile.Linux
+    fi
 
     # Cài đặt 3proxy
     echo "[4/7] ➤ Cài đặt 3proxy..."
-    sudo mkdir -p /usr/local/3proxy/bin
-    sudo cp src/3proxy /usr/local/3proxy/bin/
-    sudo mkdir -p /usr/local/3proxy/logs
-    sudo mkdir -p /etc/3proxy
+    sudo mkdir -p /usr/local/3proxy/bin /etc/3proxy /usr/local/3proxy/logs
+    sudo cp src/3proxy /usr/local/3proxy/bin/ && sudo chmod +x /usr/local/3proxy/bin/3proxy
 
-    # Tạo cấu hình 3proxy với user/pass tự động
-    echo "[5/7] ➤ Tạo cấu hình SOCKS5 với thông tin cố định..."
+    # Tạo cấu hình 3proxy đơn giản hơn
+    echo "[5/7] ➤ Tạo cấu hình SOCKS5..."
     sudo tee /etc/3proxy/3proxy.cfg > /dev/null <<EOF
-# 3proxy configuration - S2CODE VIP SOCKS5
 daemon
 maxconn 1000
 nserver 8.8.8.8
-nserver 8.8.4.4
-nserver 1.1.1.1
-nscache 65536
-timeouts 1 5 30 60 180 1800 15 60
-log /usr/local/3proxy/logs/3proxy.log D
-logformat "- +_L%t.%. %N.%p %E %U %C:%c %R:%r %O %I %h %T"
-archiver gz /usr/local/3proxy/logs/3proxy-%F.log.gz 30
 auth strong
-users tangoclong:CL:2000
-allow tangoclong
-socks -p6969
+users $squid_user:CL:$squid_pass
+allow $squid_user
+socks -p$proxy_port
 EOF
 
     # Tạo systemd service
     echo "[6/7] ➤ Tạo systemd service..."
     sudo tee /etc/systemd/system/3proxy.service > /dev/null <<EOF
 [Unit]
-Description=3proxy SOCKS5 Server - S2CODE VIP
+Description=3proxy SOCKS5 Server
 After=network.target
 
 [Service]
 Type=simple
 User=root
 ExecStart=/usr/local/3proxy/bin/3proxy /etc/3proxy/3proxy.cfg
-ExecReload=/bin/kill -HUP \$MAINPID
-Restart=on-failure
-RestartSec=3
-LimitNOFILE=65535
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
@@ -451,6 +452,15 @@ EOF
     sudo systemctl daemon-reload
     sudo systemctl enable 3proxy
     sudo systemctl start 3proxy
+    
+    # Kiểm tra status
+    sleep 3
+    if sudo systemctl is-active --quiet 3proxy; then
+        echo "✅ SOCKS5 proxy đã khởi động thành công!"
+    else
+        echo "⚠️ Đang thử khởi động lại..."
+        sudo systemctl restart 3proxy
+    fi
 fi
 
 # Lấy IP và hiển thị thông tin đầy đủ
@@ -482,15 +492,17 @@ if [ "$proxy_type" = "HTTP" ]; then
     echo -e "${PURPLE}║${CYAN} 🔧 Protocols: ${WHITE}$protocols${PURPLE}║${NC}"
     echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 else
-    # SOCKS5 info
+    # SOCKS5 info với URL format giống HTTP
+    socks5_url="socks5://$squid_user:$squid_pass@$ip_address:$proxy_port"
+    
     echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
     echo -e "${PURPLE}║${WHITE}                        THÔNG TIN SOCKS5 PROXY VIP - $client_full_name${PURPLE}║${NC}"
     echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${PURPLE}║${CYAN} 🔒 SOCKS5 Host: ${WHITE}$ip_address${PURPLE}║${NC}"
-    echo -e "${PURPLE}║${CYAN} 🚪 Port: ${WHITE}6969${PURPLE}║${NC}"
-    echo -e "${PURPLE}║${CYAN} 👤 Username: ${WHITE}tangoclong${PURPLE}║${NC}"
-    echo -e "${PURPLE}║${CYAN} 🔑 Password: ${WHITE}2000${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🔒 SOCKS5 Proxy URL: ${WHITE}$socks5_url${PURPLE}║${NC}"
     echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🚪 Port: ${WHITE}$proxy_port${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 👤 Username: ${WHITE}$squid_user${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🔑 Password: ${WHITE}$squid_pass${PURPLE}║${NC}"
     echo -e "${PURPLE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${PURPLE}║${NC}"
     echo -e "${PURPLE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${PURPLE}║${NC}"
     echo -e "${PURPLE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${PURPLE}║${NC}"
