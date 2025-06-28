@@ -75,18 +75,18 @@ send_telegram_notification() {
 clear
 
 # S2CODETAEM Logo và giới thiệu gọn
-echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║${WHITE}                                                                               ${CYAN}║${NC}"
-echo -e "${CYAN}║${RED}   ███████${YELLOW}██████${GREEN}    ██████${BLUE}██████${PURPLE}██████${WHITE}████████${RED}███████${CYAN}███████${WHITE}    ${CYAN}║${NC}"
-echo -e "${CYAN}║${RED}   ██${WHITE}         ${YELLOW}██${WHITE}    ${GREEN}██${WHITE}    ${BLUE}██${WHITE}   ${PURPLE}██${WHITE}   ${WHITE}██${WHITE}      ${RED}██${WHITE}      ${CYAN}██${WHITE}    ${CYAN}║${NC}"
-echo -e "${CYAN}║${RED}   ███████${YELLOW}██████${GREEN}    ██${WHITE}    ${BLUE}██${WHITE}   ${PURPLE}██${WHITE}   ${WHITE}███████${RED}███████${CYAN}███████${WHITE}    ${CYAN}║${NC}"
-echo -e "${CYAN}║${RED}        ██${WHITE}   ${YELLOW}██${WHITE}    ${GREEN}██${WHITE}    ${BLUE}██${WHITE}   ${PURPLE}██${WHITE}   ${WHITE}██${WHITE}           ${RED}██${WHITE}      ${CYAN}██${WHITE}    ${CYAN}║${NC}"
-echo -e "${CYAN}║${RED}   ███████${YELLOW}██████${GREEN}    ██████${BLUE}██████${PURPLE}██████${WHITE}████████${RED}███████${CYAN}███████${WHITE}    ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}                                                                               ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}                    ⚡${YELLOW} S2CODETAEM ${RED}★ ${BLUE}VIP PROXY INSTALLER ${WHITE}⚡                    ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}          ${GREEN}🚀 Developed by TẠ NGỌC LONG - Premium Solutions 🚀             ${CYAN}║${NC}"
-echo -e "${CYAN}║${WHITE}                                                                               ${CYAN}║${NC}"
-echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
+echo -e "${CYAN}╔═══════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║${WHITE}                                                       ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}   ███ ${YELLOW}███ ${GREEN}███ ${BLUE}███ ${PURPLE}███ ${WHITE}███ ${CYAN}███ ${RED}███ ${YELLOW}███     ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}   █   ${YELLOW}█   ${GREEN}█ █ ${BLUE}█ █ ${PURPLE}█   ${WHITE}█   ${CYAN}█   ${RED}█   ${YELLOW}█       ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}   ███ ${YELLOW}███ ${GREEN}███ ${BLUE}███ ${PURPLE}███ ${WHITE}███ ${CYAN}█   ${RED}███ ${YELLOW}███     ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}     █ ${YELLOW}  █ ${GREEN}█ █ ${BLUE}█ █ ${PURPLE}█   ${WHITE}  █ ${CYAN}█   ${RED}█   ${YELLOW}█       ${CYAN}║${NC}"
+echo -e "${CYAN}║${RED}   ███ ${YELLOW}███ ${GREEN}█ █ ${BLUE}███ ${PURPLE}███ ${WHITE}███ ${CYAN}███ ${RED}███ ${YELLOW}███     ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}                                                       ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}          ⚡ ${YELLOW}S2CODETAEM ${RED}★ ${BLUE}VIP PROXY INSTALLER ${WHITE}⚡          ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}    ${GREEN}🚀 Developed by TẠ NGỌC LONG - Premium Solutions 🚀    ${CYAN}║${NC}"
+echo -e "${CYAN}║${WHITE}                                                       ${CYAN}║${NC}"
+echo -e "${CYAN}╚═══════════════════════════════════════════════════════╝${NC}"
 echo ""
 
 # Thông tin liên hệ gọn
