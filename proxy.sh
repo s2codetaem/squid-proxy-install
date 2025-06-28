@@ -401,6 +401,11 @@ elif [ "$proxy_type" = "SOCKS5" ]; then
 
     # Cấu hình danted.conf
     echo "[4/5] ➤ Tạo file cấu hình VIP cho Dante..."
+    
+    # Hiển thị thông tin debug
+    echo "   🔍 Interface: $IFACE"
+    echo "   🔍 Port: $proxy_port"
+    
     sudo tee /etc/danted.conf > /dev/null <<EOF
 logoutput: /var/log/danted.log
 internal: $IFACE port = $proxy_port
@@ -420,6 +425,14 @@ socks pass {
 }
 EOF
 
+    # Kiểm tra file đã được tạo
+    if [ -f "/etc/danted.conf" ]; then
+        echo "   ✅ File cấu hình đã được tạo"
+    else
+        echo "   ❌ Lỗi tạo file cấu hình!"
+        exit 1
+    fi
+
     # Mở port trên UFW (nếu có)
     if command -v ufw >/dev/null; then
         echo "   🔧 Đang mở port $proxy_port trên UFW..."
@@ -429,12 +442,26 @@ EOF
 
     # Khởi động lại dịch vụ
     echo "[5/5] ➤ Khởi động dịch vụ Dante..."
-    sudo systemctl restart danted 2>/dev/null || sudo systemctl restart dante-server 2>/dev/null
-    sudo systemctl enable danted 2>/dev/null || sudo systemctl enable dante-server 2>/dev/null
+    
+    # Tự động detect service name (dant hoặc dante-server)
+    DANTE_SERVICE=""
+    if systemctl list-unit-files | grep -q "^dant.service"; then
+        DANTE_SERVICE="dant"
+    elif systemctl list-unit-files | grep -q "^dante-server.service"; then
+        DANTE_SERVICE="dante-server"
+    elif systemctl list-unit-files | grep -q "^danted.service"; then
+        DANTE_SERVICE="danted"
+    else
+        DANTE_SERVICE="dant"  # default fallback
+    fi
+    
+    echo "   🔍 Sử dụng service: $DANTE_SERVICE"
+    sudo systemctl restart $DANTE_SERVICE
+    sudo systemctl enable $DANTE_SERVICE
 
     # Kiểm tra dịch vụ
     sleep 3
-    if systemctl is-active --quiet danted || systemctl is-active --quiet dante-server; then
+    if systemctl is-active --quiet $DANTE_SERVICE; then
         echo "   ✅ Dante SOCKS5 service đã khởi động thành công"
         
         # Kiểm tra port
@@ -449,11 +476,21 @@ EOF
         fi
     else
         echo "   ⚠️ Đang thử khởi động lại dịch vụ..."
-        sudo systemctl restart danted 2>/dev/null || sudo systemctl restart dante-server 2>/dev/null
+        sudo systemctl restart $DANTE_SERVICE
         sleep 2
+        
+        # Thông báo thêm thông tin debug
+        echo "   📝 Kiểm tra trạng thái service:"
+        sudo systemctl status $DANTE_SERVICE --no-pager -n 3
+        echo "   📝 Kiểm tra log:"
+        sudo tail -5 /var/log/danted.log 2>/dev/null || echo "   ⚠️ Không tìm thấy log file"
     fi
 
     echo "✅ Proxy SOCKS5 đã được cài đặt xong!"
+    echo "➡️ IP: $(curl -s ifconfig.me)"
+    echo "➡️ Cổng: $proxy_port"  
+    echo "➡️ Người dùng: $squid_user"
+    echo "➡️ Mật khẩu: $squid_pass"
 fi
 
 # Lấy IP và hiển thị thông tin đầy đủ
