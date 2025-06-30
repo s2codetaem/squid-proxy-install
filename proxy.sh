@@ -9,6 +9,8 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[1;37m'
 NC='\033[0m' # No Color
+#Soi con cặc 
+#ngu ăn lười làm súc vật
 
 # S2CODETAEM Logo và giới thiệu gọn
 echo -e "${CYAN}╔═══════════════════════════════════════════════════════╗${NC}"
