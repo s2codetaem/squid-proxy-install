@@ -247,7 +247,7 @@ echo "$squid_pass" | sudo htpasswd -c -i /etc/squid/passwords "$squid_user"
 # Khởi động lại Squid
 echo "[5/5] ➤ Khởi động lại dịch vụ Squid..."
 sudo systemctl restart squid
-sudo systemctl enable squid
+sudo systemctl enabl squid
 
 # Kiểm tra service
 sleep 3
