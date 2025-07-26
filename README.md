@@ -41,7 +41,7 @@
 
 ## 🚀 **Tính Năng Nổi Bật**
 
-| Tính năng | HTTP Proxy | SOCKS5 Proxy |
+| Tính năng | HTTP Proxy | SOCKS5 Pro ( Mua)  |
 |-----------|------------|--------------|
 | **Web Browsing** | ✅ Tối ưu | ✅ Hỗ trợ |
 | **Applications** | ⚠️ Giới hạn | ✅ Hoàn hảo |
@@ -125,7 +125,7 @@ Username: tangoclong
 Password: 2000
 ```
 
-### 🔒 **SOCKS5 Proxy:**
+### 🔒 **SOCKS5 Proxy chỉ có bản pro :**
 ```
 Format: socks5://tangoclong:2000@your-ip:6969
 
